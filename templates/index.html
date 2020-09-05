@@ -6,12 +6,13 @@
   <meta charset="utf-8">
   <title>Карта мэтэбэ спотов</title>
 
-  <link rel="shortcut icon" href="{% static "spots/favicon.png" %}" type="image/png">
+  <link rel="shortcut icon" href="{% static "spotograph/favicon.png" %}" type="image/png">
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
 
   <link rel="stylesheet" href="https://unpkg.com/leaflet@1.6.0/dist/leaflet.css" integrity="sha512-xwE/Az9zrjBIphAcBb3F6JVqxf46+CDLwfLMHloNu6KEQCAWi6HcDUbeOfBIptF7tcCzusKFjFw2yuvEpDL9wQ==" crossorigin=""/>
-  <link rel="stylesheet" href="{% static "spots/css/leaflet-sidebar.css" %}"/>
+  <link rel="stylesheet" href="{% static "spotograph/css/leaflet-sidebar.css" %}"/>
+  <link rel="stylesheet" href="{% static "spotograph/css/chat.css" %}"/>
 
   <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css" integrity="sha384-9aIt2nRpC12Uk9gS9baDl411NQApFmC26EwAOH8WgZl5MYYxFfc+NcPb1dKGj7Sk" crossorigin="anonymous">
   <link rel="stylesheet" href="https://unpkg.com/@ansur/leaflet-pulse-icon@0.1.1/dist/L.Icon.Pulse.css">
@@ -38,14 +39,60 @@
       color: red;
       width: 100px;
     }
+    .soc-icon {
+      height: 30px;
+      width: 30px;
+      margin: 0 5px
+    }
+    .btn-light-moon {
+      background: #FFEFBA;  /* fallback for old browsers */
+      background: -webkit-linear-gradient(to right, #FFFFFF, #FFEFBA);  /* Chrome 10-25, Safari 5.1-6 */
+      background: linear-gradient(to right, #FFFFFF, #FFEFBA); /* W3C, IE 10+/ Edge, Firefox 16+, Chrome 26+, Opera 12+, Safari 7+ */
+      color: #000;
+      border: 3px solid #eee;
+      margin: -10px auto 10px auto;
+    }
+    .btn-cool-blues {
+      background: #2193b0;  /* fallback for old browsers */
+      background: -webkit-linear-gradient(to right, #6dd5ed, #2193b0);  /* Chrome 10-25, Safari 5.1-6 */
+      background: linear-gradient(to right, #6dd5ed, #2193b0); /* W3C, IE 10+/ Edge, Firefox 16+, Chrome 26+, Opera 12+, Safari 7+ */
+      color: #fff;
+      border: 3px solid #eee;
+    }
+    .center {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 50px;
+      width: 100%;
+    }
+}
   </style>
-  {{ places_geojson|json_script:"places-geojson" }}
+  <script id="places-geojson" type="application/json">
+    {
+      "type": "FeatureCollection",
+      "features": [
+        {
+          "type": "Feature",
+          "geometry": {
+            "type": "Point",
+            "coordinates": [30.320205, 60.002289]
+          },
+          "properties": {
+            "title": "FreakSpot",
+            "placeId": "1",
+            "detailsUrl": "{% static 'spot/freakspot.json' %}"
+          }
+        }
+      ]
+    }
+  </script>
 
 
   <script id="app-template" type="text/template">
     <div v-bind:class="{'sidebar-content': 1, 'bg-white': selectedPlace, 'bg-secondary': !selectedPlace}">
       <div v-if="promptVisible" class="d-flex flex-column justify-content-center align-items-center" style="height: 100%;">
-        <img class="d-block select-place-prompt mb-4" src="{%  static "spotograph/hand-pointer-regular.svg" %}" alt="Select place">
+        <img class="d-block select-place-prompt mb-4" src="{% static "spotograph/hand-pointer-regular.svg" %}" alt="Select place">
         <h4>Выберите место на карте</h4>
       </div>
 {% verbatim %}
@@ -55,14 +102,13 @@
         </div>
       </div>
 
-      <div class="place-description" v-if="selectedPlace">
+      <div class="place-description" v-if="selectedPlace" style="font-size: 15px">
 
-        <img v-if="mainPhotoSrc" v-bind:src="mainPhotoSrc" class="d-block shadow mb-3 rounded" v-bind:alt="selectedPlace.title">
+        <img v-if="mainPhotoSrc" v-bind:src="mainPhotoSrc" class="d-block shadow mb-3 mx-auto rounded" v-bind:alt="selectedPlace.title">
 
-        <h5 class="mb-3">{{ selectedPlace.title }}</h5>
+        <h4 class="mb-3 text-center">{{ selectedPlace.title }}</h4>
 
         <p>{{ selectedPlace.short_description }}</p>
-
         <div id="place-photos" class="carousel slide mb-3 shadow" data-ride="carousel" data-interval="5000">
           <ol class="carousel-indicators">
             <template v-for="(img, index) in carouselImgs" :key="img">
@@ -87,10 +133,38 @@
             </a>
           </template>
         </div>
-
         <div v-html="selectedPlace.long_description"></div>
+        {% endverbatim %}
+        <div style="margin-bottom: 20px">
+          <img class="soc-icon" src="{%  static "spotograph/vkn.svg" %}" alt="VK">
+          <img class="soc-icon" src="{% static 'spotograph/instagram.svg' %}" alt="IG">
+        </div>
+
+        <div>
+          <button class="btn btn-light-moon btn-fab">Задонатить!</button>
+        </div>
+        <div style="margin-bottom: 20px; display: flex">
+          <h5>Маршрут:</h5>
+          <img class="soc-icon" src="{%  static "spotograph/google-maps.svg" %}" alt="VK">
+          <img class="soc-icon" src="{% static 'spotograph/ya-navt.png' %}" alt="IG">
+        </div>
+
+        {% verbatim %}
+        <h5>Последние сообщения:</h5>
+        <div class="mesgs" style="width: 100%; padding-top: 0">
+            <div class="incoming_msg" style="display: flex; align-items: center">
+                <div class="incoming_msg_img" style="width: 10%"> <img src="https://ptetutorials.com/images/user-profile.png" alt="sunil"> </div>
+                <div class="received_msg">
+                    <div class="received_withd_msg" style="width: 100%">
+                        <p>Test which is a new approach to have all
+                            solutions teeest sssest heeeeest</p>
+                        <span class="time_date"> 11:01 AM    |    June 9</span></div>
+                </div>
+            </div>
       </div>
     </div>
+      <div class="center">
+      <button class="btn btn-cool-blues btn-fab" style="padding: 1px 5px">Чат</button></div>
   </script>
 {% endverbatim %}
   <script id="app-heading" type="text/template">
