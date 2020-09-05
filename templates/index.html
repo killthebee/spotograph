@@ -50,7 +50,6 @@
       background: linear-gradient(to right, #FFFFFF, #FFEFBA); /* W3C, IE 10+/ Edge, Firefox 16+, Chrome 26+, Opera 12+, Safari 7+ */
       color: #000;
       border: 3px solid #eee;
-      margin: -10px auto 10px auto;
     }
     .btn-cool-blues {
       background: #2193b0;  /* fallback for old browsers */
@@ -66,7 +65,23 @@
       height: 50px;
       width: 100%;
     }
-}
+   .soc-nav {
+     list-style: none;
+     text-align: center;
+     margin-bottom: 20px;
+     padding: 0;
+     width: 100%;
+     display: flex;
+     justify-content: left;
+     align-items: center;
+   }
+    {#@media (max-width: 768px) {#}
+    {#   .soc-nav {#}
+    {#  display: flex;#}
+    {#  justify-content: space-around;#}
+    {#  width: 60%;#}
+    {#}#}
+    }
   </style>
   <script id="places-geojson" type="application/json">
     {
@@ -107,6 +122,12 @@
         <img v-if="mainPhotoSrc" v-bind:src="mainPhotoSrc" class="d-block shadow mb-3 mx-auto rounded" v-bind:alt="selectedPlace.title">
 
         <h4 class="mb-3 text-center">{{ selectedPlace.title }}</h4>
+        <div class="center" style="margin-bottom: 20px">
+          <div>
+            <button class="btn btn-light-moon btn-fab">Задонатить!</button>
+            <button class="btn btn-cool-blues btn-fab">Чат</button>
+          </div>
+        </div>
 
         <p>{{ selectedPlace.short_description }}</p>
         <div id="place-photos" class="carousel slide mb-3 shadow" data-ride="carousel" data-interval="5000">
@@ -134,24 +155,10 @@
           </template>
         </div>
         <div v-html="selectedPlace.long_description"></div>
-        {% endverbatim %}
-        <div style="margin-bottom: 20px">
-          <img class="soc-icon" src="{%  static "spotograph/vkn.svg" %}" alt="VK">
-          <img class="soc-icon" src="{% static 'spotograph/instagram.svg' %}" alt="IG">
-        </div>
+{% endverbatim %}
 
-        <div>
-          <button class="btn btn-light-moon btn-fab">Задонатить!</button>
-        </div>
-        <div style="margin-bottom: 20px; display: flex">
-          <h5>Маршрут:</h5>
-          <img class="soc-icon" src="{%  static "spotograph/google-maps.svg" %}" alt="VK">
-          <img class="soc-icon" src="{% static 'spotograph/ya-navt.png' %}" alt="IG">
-        </div>
-
-        {% verbatim %}
         <h5>Последние сообщения:</h5>
-        <div class="mesgs" style="width: 100%; padding-top: 0">
+        <div class="mesgs" style="width: 100%; padding: 0">
             <div class="incoming_msg" style="display: flex; align-items: center">
                 <div class="incoming_msg_img" style="width: 10%"> <img src="https://ptetutorials.com/images/user-profile.png" alt="sunil"> </div>
                 <div class="received_msg">
@@ -162,11 +169,22 @@
                 </div>
             </div>
       </div>
+        <ul class="soc-nav">
+        <li>
+          <h6>Soc.</h6>
+          <img class="soc-icon" src="{%  static "spotograph/vkn.svg" %}" alt="VK">
+          <img class="soc-icon" src="{% static 'spotograph/instagram.svg' %}" alt="IG">
+        </li>
+        <li>
+          <h6>Nav.</h6>
+          <img class="soc-icon" src="{%  static "spotograph/google-maps.svg" %}" alt="VK">
+          <img class="soc-icon" src="{% static 'spotograph/ya-navt.png' %}" alt="IG">
+        </li>
+        </ul>
     </div>
-      <div class="center">
-      <button class="btn btn-cool-blues btn-fab" style="padding: 1px 5px">Чат</button></div>
+
   </script>
-{% endverbatim %}
+
   <script id="app-heading" type="text/template">
     <nav class="navbar navbar-expand-lg navbar-light bg-light">
       <a class="navbar-brand" href="#">Spotograph</a>
