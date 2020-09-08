@@ -8,3 +8,10 @@ def show_page(request):
     context = {}
     render_page = template.render(context, request)
     return HttpResponse(render_page)
+
+
+def show_cms(request):
+    template = loader.get_template('cms.html')
+    context = {}
+    render_page = template.render(context, request)
+    return HttpResponse(render_page)
