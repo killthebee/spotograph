@@ -183,11 +183,14 @@
     #short-description {
       height: calc(6.5em + .75rem + 2px);
     }
+    #features {
+      height: calc(6.5em + .75rem + 2px);
+    }
     .img-container{
       display: flex;
       flex-wrap: wrap;
       justify-content: space-between;
-      width: 300px;
+      width: 90%;
     }
     {#@media (max-width: 768px) {#}
     {#   .soc-nav {#}
@@ -227,20 +230,8 @@
 
   <script id="app-template" type="text/template">
     <div v-bind:class="{'sidebar-content': 1, 'bg-white': selectedPlace, 'bg-secondary': !selectedPlace}">
-      <div v-if="promptVisible" class="d-flex flex-column justify-content-center align-items-center"
-           style="height: 100%;">
-        <img class="d-block select-place-prompt mb-4" src="{% static "spotograph/hand-pointer-regular.svg" %}"
-             alt="Select place">
-        <h4>Выберите место на карте</h4>
-      </div>
       {% verbatim %}
-      <div class="align-items-center justify-content-center d-flex" v-if="loading" style="height: 100%;">
-        <div class="spinner-grow text-light" style="width: 3rem; height: 3rem;" role="status">
-          <span class="sr-only">Loading...</span>
-        </div>
-      </div>
-
-      <div class="place-description" v-if="selectedPlace" style="font-size: 15px">
+      <div class="place-description" style="font-size: 15px">
 
         <img v-if="mainPhotoSrc" v-bind:src="mainPhotoSrc" class="d-block shadow mb-3 mx-auto rounded"
              v-bind:alt="selectedPlace.title">
@@ -311,11 +302,11 @@
   </script>
 </head>
 <body class="bg-dark">
-<div id="header"></div>
 <div style="display: flex; justify-content: space-around">
   <div class="sidebar-container">
     <div class="sidebar-control">
-        <div class="col-md-8 order-md-1">
+        <div class="col order-md-1 no-marginLR">
+
           <h4 class="mb-3 mt-3">Данные спота</h4>
           <label for="browse-input">Главное изображение</label>
           <div class="preview text-center">
@@ -331,7 +322,7 @@
           <form class="needs-validation" novalidate>
             <div class="mb-3">
               <label for="title">Название спота</label>
-              <input type="text" class="form-control" id="title" placeholder="spot title">
+              <input type="text" class="form-control" id="title" placeholder="DefaultSpot">
               <div class="invalid-feedback">
                 im keepin it in case
               </div>
@@ -344,6 +335,7 @@
                 im keepin it in case
               </div>
             </div>
+
             <label for="browse-input">Фото фитчей спота</label>
             <div class="img-container">
               <div class="preview text-center" width="90">
@@ -355,7 +347,7 @@
                 </div>
                 <span class="Error"></span>
               </div>
-              <div class="preview text-center">
+              <div class="preview text-center" width="90">
                 <img class="preview-img" src="{% static 'spotograph/mountain-bike.png' %}" alt="Preview Image" width="90" height="90"/>
                 <div class="browse-button">
                     <img class='onhover-image pencil' src="{% static 'spotograph/pencil.png' %}">
@@ -364,34 +356,7 @@
                 </div>
                 <span class="Error"></span>
               </div>
-              <div class="preview text-center">
-                <img class="preview-img" src="{% static 'spotograph/mountain-bike.png' %}" alt="Preview Image" width="90" height="90"/>
-                <div class="browse-button">
-                    <img class='onhover-image pencil' src="{% static 'spotograph/pencil.png' %}">
-                    <img class='onhover-image backet' src="{% static 'spotograph/delete.png' %}">
-                    <input class="browse-input" type="file" id="browse-input" required name="UploadedFile" id="UploadedFile"/>
-                </div>
-                <span class="Error"></span>
-              </div>
-              <div class="preview text-center">
-                <img class="preview-img" src="{% static 'spotograph/mountain-bike.png' %}" alt="Preview Image" width="90" height="90"/>
-                <div class="browse-button">
-                    <img class='onhover-image pencil' src="{% static 'spotograph/pencil.png' %}">
-                    <img class='onhover-image backet' src="{% static 'spotograph/delete.png' %}">
-                    <input class="browse-input" type="file" id="browse-input" required name="UploadedFile" id="UploadedFile"/>
-                </div>
-                <span class="Error"></span>
-              </div>
-              <div class="preview text-center">
-                <img class="preview-img" src="{% static 'spotograph/mountain-bike.png' %}" alt="Preview Image" width="90" height="90"/>
-                <div class="browse-button">
-                    <img class='onhover-image pencil' src="{% static 'spotograph/pencil.png' %}">
-                    <img class='onhover-image backet' src="{% static 'spotograph/delete.png' %}">
-                    <input class="browse-input" type="file" id="browse-input" required name="UploadedFile" id="UploadedFile"/>
-                </div>
-                <span class="Error"></span>
-              </div>
-              <div class="preview text-center">
+              <div class="preview text-center" width="90">
                 <img class="preview-img" src="{% static 'spotograph/mountain-bike.png' %}" alt="Preview Image" width="90" height="90"/>
                 <div class="browse-button">
                     <img class='onhover-image pencil' src="{% static 'spotograph/pencil.png' %}">
@@ -401,9 +366,55 @@
                 <span class="Error"></span>
               </div>
             </div>
+
+
+              <div class="mb-3">
+                <label for="features">Описание спота <span class="text-muted">(опционально)</span></label>
+                <textarea type="text" class="form-control" id="features" placeholder="spot features"></textarea>
+                <div class="invalid-feedback">
+                  im keepin it in case
+                </div>
+              </div>
+
+            <div class="row">
+              <div class="col-md-6 mb-3">
+                <label for="latitude">Широта</label>
+                <input type="text" class="form-control" id="latitude" placeholder="" value="" required>
+                <div class="invalid-feedback">
+                  im keepin it in case
+                </div>
+              </div>
+
+              <div class="col-md-6 mb-3">
+                <label for="longitude">Долгота</label>
+                <input type="text" class="form-control" id="longitude" placeholder="" value="" required>
+                <div class="invalid-feedback">
+                  im keepin it in case
+                </div>
+              </div>
+            </div>
+
+            <div class="mb-3">
+              <label for="inst-url">Ссылка на инст</label>
+              <input type="text" class="form-control" id="inst-url" placeholder="instagram.com/">
+              <div class="invalid-feedback">
+                im keepin it in case
+              </div>
+            </div>
+
+            <div class="mb-3">
+              <label for="vk-url">Ссылка на вк</label>
+              <input type="text" class="form-control" id="vk-url" placeholder="vk.com/">
+              <div class="invalid-feedback">
+                im keepin it in case
+              </div>
+            </div>
+
+            <button class="btn btn-primary btn-lg btn-block" type="submit">Сохранить</button>
+
             <hr class="mb-4">
 
-            <h4 class="mb-3">Payment</h4>
+            <h4 class="mb-3">Payment ( когда буду делать донаты )</h4>
 
             <div class="d-block my-3">
               <div class="custom-control custom-radio">
@@ -453,7 +464,7 @@
               </div>
             </div>
             <hr class="mb-4">
-            <button class="btn btn-primary btn-lg btn-block" type="submit">Continue to checkout</button>
+
           </form>
         </div>
     </div>
@@ -493,53 +504,46 @@
         el: '#sidebar',
         template: document.getElementById('app-template').innerHTML,
         data: {
-            loadingPlaceId: null,
             selectedPlace: {
-                title: "FreakSpot",
+                title: "DefaultSpot",
                 placeId: '1',
                 imgs: [
-                    "https://sun9-62.userapi.com/c630127/v630127931/26e39/BXAtpXv9UIM.jpg",
-                    "https://sun9-30.userapi.com/c9356/v9356879/1dc/YIjbVncEbZE.jpg",
-                    "https://sun9-40.userapi.com/c9356/v9356879/1e6/lBzxCveEfvg.jpg",
-                    "https://sun9-67.userapi.com/c9356/v9356879/33a/JWxbeFDvEy0.jpg"
-                ],
-                short_description: "Самый быстросохнущий спот Петербурга.",
-                long_description: "<p>Памп трекл с 3 траэкториями<br>Линия дёртов<br>Учебка<br>Разгонки</p>",
-            }
-        },
-        computed: {
-            promptVisible: function () {
-                return !this.loading && !this.selectedPlace;
-            },
-            loading: function () {
-                return this.loadingPlaceId !== null;
-            },
-            mainPhotoSrc: function () {
-                if (!this.selectedPlace || !this.selectedPlace.imgs.length) {
-                    return null;
-                }
-                return this.selectedPlace.imgs[0];
-            },
-            carouselImgs: function () {
-                if (!this.selectedPlace || !this.selectedPlace.imgs.length) {
-                    return [];
-                }
-                return this.selectedPlace.imgs.slice(1);
-            },
-        },
-        updated: function () {
-            this.$nextTick(function () {
-                // Код, будет запущен только после обновления всех представлений
-                $('#place-photos').carousel();
-            })
-        },
-        methods: {
-            handlePhotosClick: function (slideId = 'next') {
-                // default event handlers of Bootstrap Carousel conflict with Leaflet
-                // so custom handler will mimic expected carousel behaviour
-                $('#place-photos').carousel(slideId);
-            }
-        },
+                  "https://sun9-62.userapi.com/c630127/v630127931/26e39/BXAtpXv9UIM.jpg",
+                  "https://sun9-30.userapi.com/c9356/v9356879/1dc/YIjbVncEbZE.jpg",
+                  "https://sun9-40.userapi.com/c9356/v9356879/1e6/lBzxCveEfvg.jpg",
+                  "https://sun9-67.userapi.com/c9356/v9356879/33a/JWxbeFDvEy0.jpg"
+              ],
+              short_description: "Самый быстросохнущий спот Петербурга.",
+              long_description: "<p>Памп трекл с 3 траэкториями<br>Линия дёртов<br>Учебка<br>Разгонки</p>",
+          }
+      },
+      computed: {
+          mainPhotoSrc: function () {
+              if (!this.selectedPlace || !this.selectedPlace.imgs.length) {
+                  return null;
+              }
+              return this.selectedPlace.imgs[0];
+          },
+          carouselImgs: function () {
+              if (!this.selectedPlace || !this.selectedPlace.imgs.length) {
+                  return [];
+              }
+              return this.selectedPlace.imgs.slice(1);
+          },
+      },
+      updated: function () {
+          this.$nextTick(function () {
+              // Код, будет запущен только после обновления всех представлений
+              $('#place-photos').carousel();
+          })
+      },
+      methods: {
+          handlePhotosClick: function (slideId = 'next') {
+              // default event handlers of Bootstrap Carousel conflict with Leaflet
+              // so custom handler will mimic expected carousel behaviour
+              $('#place-photos').carousel(slideId);
+          }
+      },
     });
 
 
@@ -547,8 +551,15 @@
         el: '#header',
         template: document.getElementById('app-heading').innerHTML,
         data: {
-            showHeader: true
-        }
-    })
+            showHeader: true,
+          }
+      });
+
+
+    let titleField = document.getElementById('title');
+    titleField.addEventListener('keyup', function (e) {
+        sidebarApp.selectedPlace.title = titleField.value
+    });
+
 </script>
 </html>
