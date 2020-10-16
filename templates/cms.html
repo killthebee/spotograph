@@ -108,6 +108,7 @@
       position: relative;
       height: 120px;
       width: 90px;
+      margin-right: 20px;
     }
     .text-center {
         text-align: center!important;
@@ -149,8 +150,8 @@
         box-sizing: border-box;
     }
     .browse-input {
-      width: 200px;
-      height: 200px;
+      width: 90px;
+      height: 90px;
       border-radius: 100%;
       transform: translate(-1px, -26px);
       opacity: 0;
@@ -189,7 +190,7 @@
     .img-container{
       display: flex;
       flex-wrap: wrap;
-      justify-content: space-between;
+      justify-content: start;
       width: 90%;
     }
     {#@media (max-width: 768px) {#}
@@ -310,11 +311,11 @@
           <h4 class="mb-3 mt-3">Данные спота</h4>
           <label for="browse-input">Главное изображение</label>
           <div class="preview text-center">
-            <img class="preview-img" src="{% static 'spotograph/mountain-bike.png' %}" alt="Preview Image" width="90" height="90"/>
+            <img class="preview-img" id="main-image" src="{% static 'spotograph/mountain-bike.png' %}" alt="Preview Image" width="90" height="90"/>
             <div class="browse-button">
                 <img class='onhover-image pencil' src="{% static 'spotograph/pencil.png' %}">
                 <img class='onhover-image backet' src="{% static 'spotograph/delete.png' %}">
-                <input class="browse-input" type="file" id="browse-input" required name="UploadedFile" id="UploadedFile"/>
+                <input class="browse-input" type="file" id="main-input" required name="UploadedFile" id="UploadedFile"/>
             </div>
             <span class="Error"></span>
           </div>
@@ -338,7 +339,7 @@
 
             <label for="browse-input">Фото фитчей спота</label>
             <div class="img-container">
-              <div class="preview text-center" width="90">
+              <div class="preview text-center">
                 <img class="preview-img" src="{% static 'spotograph/mountain-bike.png' %}" alt="Preview Image" width="90" height="90"/>
                 <div class="browse-button">
                     <img class='onhover-image pencil' src="{% static 'spotograph/pencil.png' %}">
@@ -347,7 +348,7 @@
                 </div>
                 <span class="Error"></span>
               </div>
-              <div class="preview text-center" width="90">
+              <div class="preview text-center">
                 <img class="preview-img" src="{% static 'spotograph/mountain-bike.png' %}" alt="Preview Image" width="90" height="90"/>
                 <div class="browse-button">
                     <img class='onhover-image pencil' src="{% static 'spotograph/pencil.png' %}">
@@ -356,7 +357,7 @@
                 </div>
                 <span class="Error"></span>
               </div>
-              <div class="preview text-center" width="90">
+              <div class="preview text-center">
                 <img class="preview-img" src="{% static 'spotograph/mountain-bike.png' %}" alt="Preview Image" width="90" height="90"/>
                 <div class="browse-button">
                     <img class='onhover-image pencil' src="{% static 'spotograph/pencil.png' %}">
@@ -556,10 +557,34 @@
       });
 
 
-    let titleField = document.getElementById('title');
+    let titleField = document.getElementById('title'),
+        shortDescription = document.getElementById('short-description'),
+        spotFeatures = document.getElementById('features'),
+        latitudeField = document.getElementById('latitude'),
+        longitudeField = document.getElementById('longitude'),
+        instField = document.getElementById('inst-url'),
+        vkField = document.getElementById('vk-url');
+
     titleField.addEventListener('keyup', function (e) {
         sidebarApp.selectedPlace.title = titleField.value
     });
+    shortDescription.addEventListener('keyup', function (e) {
+        sidebarApp.selectedPlace.short_description = shortDescription.value
+    });
+    spotFeatures.addEventListener('keyup', function (e) {
+        sidebarApp.selectedPlace.long_description = spotFeatures.value
+    });
 
+    let mainImageInput = document.getElementById('main-input'),
+        mainImageImage = document.getElementById('main-image'),
+        reader = new FileReader();
+
+    reader.onload = e => {
+        mainImageImage.src = e.target.result;
+    };
+    mainImageInput.addEventListener('change', function (e) {
+        let file = e.target.files[0];
+        reader.readAsDataURL(file);
+    })
 </script>
 </html>
