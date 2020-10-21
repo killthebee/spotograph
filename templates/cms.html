@@ -289,13 +289,13 @@
         <ul class="soc-nav">
           <li>
             <h6>Soc.</h6>
-            <img class="soc-icon" src="{% static "spotograph/vkn.svg" %}" alt="VK">
-            <img class="soc-icon" src="{% static 'spotograph/instagram.svg' %}" alt="IG">
+            <a :href="selectedPlace.vkLink"><img class="soc-icon" src="{% static "spotograph/vkn.svg" %}" alt="VK"></a>
+            <a :href="selectedPlace.instLink"><img class="soc-icon" src="{% static 'spotograph/instagram.svg' %}" alt="IG"></a>
           </li>
           <li>
             <h6>Nav.</h6>
-            <img class="soc-icon" src="{% static "spotograph/google-maps.svg" %}" alt="VK">
-            <img class="soc-icon" src="{% static 'spotograph/ya-navt.png' %}" alt="IG">
+            <a :href="selectedPlace.yaNavLink"><img class="soc-icon" src="{% static "spotograph/google-maps.svg" %}" alt="VK"></a>
+            <a :href="selectedPlace.instLink"><img class="soc-icon" src="{% static 'spotograph/ya-navt.png' %}" alt="IG"></a>
           </li>
         </ul>
       </div>
@@ -521,10 +521,14 @@
                 "https://sun9-30.userapi.com/c9356/v9356879/1dc/YIjbVncEbZE.jpg",
                 "https://sun9-40.userapi.com/c9356/v9356879/1e6/lBzxCveEfvg.jpg",
                 "https://sun9-67.userapi.com/c9356/v9356879/33a/JWxbeFDvEy0.jpg"
-            ],
-            short_description: "Самый быстросохнущий спот Петербурга.",
-            long_description: "<p>Памп трекл с 3 траэкториями<br>Линия дёртов<br>Учебка<br>Разгонки</p>",
-            mainPhotoSrc: "https://sun9-62.userapi.com/c630127/v630127931/26e39/BXAtpXv9UIM.jpg",
+              ],
+              short_description: "Самый быстросохнущий спот Петербурга.",
+              long_description: "<p>Памп трекл с 3 траэкториями<br>Линия дёртов<br>Учебка<br>Разгонки</p>",
+              mainPhotoSrc: "https://sun9-62.userapi.com/c630127/v630127931/26e39/BXAtpXv9UIM.jpg",
+              vkLink: '#',
+              instLink: '#',
+              yaNavLink: '#',
+              googleLink: '#',
         }
     },
     computed: {
@@ -559,12 +563,18 @@
         }
     });
 
-
+  function makeNavLinks() {
+      if (latitudeLongitude['latitude'] && latitudeLongitude['longitude']) {
+          sidebarApp.selectedPlace.yaNavLink = `yandexnavi://build_route_on_map?lat_to=${latitudeLongitude['latitude']}&lon_to=${latitudeLongitude['longitude']}`
+          sidebarApp.selectedPlace.googleLink = `maps://www.google.com/maps/dir/?api=1&travelmode=driving&layer=traffic&destination=${latitudeLongitude['latitude']},${latitudeLongitude['longitude']}`
+      }
+  }
   let titleField = document.getElementById('title'),
       shortDescription = document.getElementById('short-description'),
       spotFeatures = document.getElementById('features'),
       latitudeField = document.getElementById('latitude'),
       longitudeField = document.getElementById('longitude'),
+      latitudeLongitude = {'latitude': null, 'longitude': null},
       instField = document.getElementById('inst-url'),
       vkField = document.getElementById('vk-url');
 
@@ -576,6 +586,27 @@
   });
   spotFeatures.addEventListener('keyup', function (e) {
       sidebarApp.selectedPlace.long_description = spotFeatures.value
+  });
+  instField.addEventListener('keyup', function (e) {
+      sidebarApp.selectedPlace.instLink = instField.value
+  });
+  vkField.addEventListener('keyup', function (e) {
+      sidebarApp.selectedPlace.vkLink = vkField.value
+  });
+
+  latitudeField.addEventListener('keyup', function (e) {
+      let coord = parseFloat(latitudeField.value);
+      if (!isNaN(coord) && coord <= 90 && coord >= -90) {
+         latitudeLongitude['latitude'] = latitudeField.value;
+         makeNavLinks()
+      }
+  });
+  longitudeField.addEventListener('keyup', function (e) {
+      let coord = parseFloat(longitudeField.value);
+      if (!isNaN(coord) && coord <= 90 && coord >= -90) {
+         latitudeLongitude['longitude'] = longitudeField.value;
+         makeNavLinks()
+      }
   });
 
   let mainImageInput = document.getElementById('main-input'),
@@ -641,6 +672,7 @@
             currentImg.src = mainImageImageBackUp;
         });
   }
+
 
 </script>
 </html>
