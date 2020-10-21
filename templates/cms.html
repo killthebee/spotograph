@@ -234,7 +234,7 @@
       {% verbatim %}
       <div class="place-description" style="font-size: 15px">
 
-        <img v-if="mainPhotoSrc" v-bind:src="mainPhotoSrc" class="d-block shadow mb-3 mx-auto rounded"
+        <img v-if="selectedPlace.mainPhotoSrc" v-bind:src="selectedPlace.mainPhotoSrc" class="d-block shadow mb-3 mx-auto rounded"
              v-bind:alt="selectedPlace.title">
 
         <h4 class="mb-3 text-center">{{ selectedPlace.title }}</h4>
@@ -518,27 +518,21 @@
               title: "DefaultSpot",
               placeId: '1',
               imgs: [
-                "https://sun9-62.userapi.com/c630127/v630127931/26e39/BXAtpXv9UIM.jpg",
                 "https://sun9-30.userapi.com/c9356/v9356879/1dc/YIjbVncEbZE.jpg",
                 "https://sun9-40.userapi.com/c9356/v9356879/1e6/lBzxCveEfvg.jpg",
                 "https://sun9-67.userapi.com/c9356/v9356879/33a/JWxbeFDvEy0.jpg"
             ],
             short_description: "Самый быстросохнущий спот Петербурга.",
             long_description: "<p>Памп трекл с 3 траэкториями<br>Линия дёртов<br>Учебка<br>Разгонки</p>",
+            mainPhotoSrc: "https://sun9-62.userapi.com/c630127/v630127931/26e39/BXAtpXv9UIM.jpg",
         }
     },
     computed: {
-        mainPhotoSrc: function () {
-            if (!this.selectedPlace || !this.selectedPlace.imgs.length) {
-                return null;
-            }
-            return this.selectedPlace.imgs[0];
-        },
         carouselImgs: function () {
             if (!this.selectedPlace || !this.selectedPlace.imgs.length) {
                 return [];
             }
-            return this.selectedPlace.imgs.slice(1);
+            return this.selectedPlace.imgs;
         },
     },
     updated: function () {
@@ -591,14 +585,14 @@
 
   reader.onload = e => {
       mainImageImage.src = e.target.result;
-      sidebarApp.selectedPlace.imgs.push(e.target.result)
+      sidebarApp.selectedPlace.mainPhotoSrc = e.target.result;
   };
   mainImageInput.addEventListener('change', function (e) {
       let file = e.target.files[0];
       reader.readAsDataURL(file);
   });
   let mainDeleteButton = document.getElementById('main-delete');
-  mainDeleteButton.addEventListener('click', function (e) {
+      mainDeleteButton.addEventListener('click', function (e) {
       mainImageImage.src = mainImageImageBackUp;
   });
 
@@ -606,35 +600,47 @@
       imgInputTemplate = document.getElementById('img-input').innerHTML,
       idsAndPics = {};
 
+  function refreshCarousel() {
+      let imgs = [];
+      for (id in idsAndPics) {
+          if (idsAndPics[id]) {
+          imgs.push(idsAndPics[id]);
+          }
+      }
+      sidebarApp.selectedPlace.imgs = imgs;
+      console.log(sidebarApp.selectedPlace.imgs)
+  }
+
   for (let i = 0; i < 3; i++) {
-      let newImg = document.createElement('div');
-      newImg.classList.add('preview', 'text-center');
-      newImg.id = `id_${i}`;
-      idsAndPics[`id_${i}`] = null;
-      newImg.innerHTML = imgInputTemplate;
-      imgField.appendChild(newImg)
-  };
+        let newImg = document.createElement('div');
+        newImg.classList.add('preview', 'text-center');
+        newImg.id = `id_${i}`;
+        idsAndPics[`id_${i}`] = null;
+        newImg.innerHTML = imgInputTemplate;
+        imgField.appendChild(newImg)
+  }
   for (let i = 0; i < 3; i++) {
-      let selector = `#${Object.keys(idsAndPics )[i]}`,
-      currentImg = document.querySelector(selector + ' img'),
-      currentInput = document.querySelector(selector + ' input'),
-      currentDeleteButton = document.querySelector(selector + ' .backet'),
-      currentReader = new FileReader();
+        let selector = `#${Object.keys(idsAndPics )[i]}`,
+        currentImg = document.querySelector(selector + ' img'),
+        currentInput = document.querySelector(selector + ' input'),
+        currentDeleteButton = document.querySelector(selector + ' .backet'),
+        currentReader = new FileReader();
 
-      currentReader.onload = e => {
-        currentImg.src = e.target.result;
-        sidebarApp.selectedPlace.imgs.push(e.target.result)
-      };
+        currentReader.onload = e => {
+          currentImg.src = e.target.result;
+          idsAndPics[`id_${i}`] = e.target.result;
+          refreshCarousel()
+        };
 
-      currentInput.addEventListener('change', function (e) {
-        let file = e.target.files[0];
-        currentReader.readAsDataURL(file);
-      });
+        currentInput.addEventListener('change', function (e) {
+          let file = e.target.files[0];
+          currentReader.readAsDataURL(file);
+        });
 
-      currentDeleteButton.addEventListener('click', function (e) {
-          currentImg.src = mainImageImageBackUp;
-      });
-  };
+        currentDeleteButton.addEventListener('click', function (e) {
+            currentImg.src = mainImageImageBackUp;
+        });
+  }
 
 </script>
 </html>
