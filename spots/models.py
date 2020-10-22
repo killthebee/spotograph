@@ -1,6 +1,7 @@
 from django.db import models
 from tinymce.models import HTMLField
 
+
 class Spot(models.Model):
 
     title = models.CharField(max_length=200, verbose_name='Название Спота')
@@ -8,6 +9,8 @@ class Spot(models.Model):
     features = HTMLField(default='Дефолтное описание фитч спота...', verbose_name='Длинное описание')
     latitude = models.FloatField(verbose_name='Широта')
     longitude = models.FloatField(verbose_name='Долгота')
+    inst = models.CharField(max_length=50, verbose_name='Ссылка на инсту', blank=True)
+    vk = models.CharField(max_length=50, verbose_name='Ссылка на вк', blank=True)
 
     def __str__(self):
         return self.title
