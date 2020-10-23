@@ -348,44 +348,15 @@
             </div>
 
             <label for="browse-input">Фото фитчей спота</label>
-            <div class="img-container" id="img-field">
-{#              <div class="preview text-center">#}
-{#                <img class="preview-img" src="{% static 'spotograph/mountain-bike.png' %}" alt="Preview Image" width="90" height="90"/>#}
-{#                <div class="browse-button">#}
-{#                    <img class='onhover-image pencil' src="{% static 'spotograph/pencil.png' %}">#}
-{#                    <img class='onhover-image backet' src="{% static 'spotograph/delete.png' %}">#}
-{#                    <input class="browse-input" type="file" id="browse-input" required name="UploadedFile" id="UploadedFile"/>#}
-{#                </div>#}
-{#                <span class="Error"></span>#}
-{#              </div>#}
-{#              <div class="preview text-center">#}
-{#                <img class="preview-img" src="{% static 'spotograph/mountain-bike.png' %}" alt="Preview Image" width="90" height="90"/>#}
-{#                <div class="browse-button">#}
-{#                    <img class='onhover-image pencil' src="{% static 'spotograph/pencil.png' %}">#}
-{#                    <img class='onhover-image backet' src="{% static 'spotograph/delete.png' %}">#}
-{#                    <input class="browse-input" type="file" id="browse-input" required name="UploadedFile" id="UploadedFile"/>#}
-{#                </div>#}
-{#                <span class="Error"></span>#}
-{#              </div>#}
-{#              <div class="preview text-center">#}
-{#                <img class="preview-img" src="{% static 'spotograph/mountain-bike.png' %}" alt="Preview Image" width="90" height="90"/>#}
-{#                <div class="browse-button">#}
-{#                    <img class='onhover-image pencil' src="{% static 'spotograph/pencil.png' %}">#}
-{#                    <img class='onhover-image backet' src="{% static 'spotograph/delete.png' %}">#}
-{#                    <input class="browse-input" type="file" id="browse-input" required name="UploadedFile" id="UploadedFile"/>#}
-{#                </div>#}
-{#                <span class="Error"></span>#}
-{#              </div>#}
-            </div>
+            <div class="img-container" id="img-field"></div>
 
-
-              <div class="mb-3">
-                <label for="features">Описание спота <span class="text-muted">(опционально)</span></label>
-                <textarea type="text" class="form-control" id="features" placeholder="spot features"></textarea>
-                <div class="invalid-feedback">
-                  im keepin it in case
-                </div>
+            <div class="mb-3">
+              <label for="features">Описание спота <span class="text-muted">(опционально)</span></label>
+              <textarea type="text" class="form-control" id="features" placeholder="spot features"></textarea>
+              <div class="invalid-feedback">
+                im keepin it in case
               </div>
+            </div>
 
             <div class="row">
               <div class="col-md-6 mb-3">
@@ -421,7 +392,7 @@
               </div>
             </div>
 
-            <button class="btn btn-primary btn-lg btn-block" type="submit">Сохранить</button>
+            <button class="btn btn-primary btn-lg btn-block" id="blue-button" type="submit">Сохранить</button>
 
             <hr class="mb-4">
 
@@ -480,6 +451,7 @@
         </div>
     </div>
   </div>
+  {% csrf_token %}
   <div class="sidebar-container">
     <div class="sidebar-control">
       <div id="sidebar"></div>
@@ -576,6 +548,7 @@
       latitudeField = document.getElementById('latitude'),
       longitudeField = document.getElementById('longitude'),
       latitudeLongitude = {'latitude': null, 'longitude': null},
+      bigBlueButton = document.getElementById('blue-button'),
       instField = document.getElementById('inst-url'),
       vkField = document.getElementById('vk-url');
 
@@ -673,5 +646,45 @@
             currentImg.src = mainImageImageBackUp;
         });
   }
+
+
+  const csrftoken = document.querySelector('[name=csrfmiddlewaretoken]').value;
+  bigBlueButton.addEventListener('click', async function (event) {
+      event.preventDefault();
+      let data = {
+          title: titleField.value,
+          description: shortDescription.value,
+          features: spotFeatures.value,
+          latitude: latitudeField.value,
+          longitude: longitudeField.value,
+          inst: instField.value,
+          vk: vkField.value,
+      };
+
+      try {
+          let response = await fetch('http://127.0.0.1:8000/api/detail/',{
+              method: 'POST',
+              headers: {
+                  'Content-type': 'application/json',
+                  'X-CSRFToken': csrftoken
+              },
+              body: JSON.stringify(data)
+          });
+
+          if (!response.ok){
+              alert('Ошибка в данных спота!');
+              return;
+          }
+
+          let result = await response.text();
+          console.log(result)
+      } catch (e) {
+          alert('Ошибка при обновлении/создании данных спота');
+          throw e;
+      }
+
+
+  })
+
 </script>
 </html>
