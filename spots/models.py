@@ -25,7 +25,7 @@ class MainImage(models.Model):
     spot = models.OneToOneField(Spot, on_delete=models.CASCADE, verbose_name='Спот', related_name='main_image')
 
     def __str__(self):
-        return self.title
+        return f"{self.id} lel"
 
     class Meta:
         verbose_name = 'Главное изображение'
