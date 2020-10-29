@@ -506,7 +506,7 @@
     },
     computed: {
         carouselImgs: function () {
-            if (!this.selectedPlace || !this.selectedPlace.imgs.length) {
+            if (!this.selectedPlace || !this.selectedPlace.imgs) {
                 return [];
             }
             return this.selectedPlace.imgs;
@@ -599,6 +599,7 @@
   let mainDeleteButton = document.getElementById('main-delete');
       mainDeleteButton.addEventListener('click', function (e) {
       mainImageImage.src = mainImageImageBackUp;
+      sidebarApp.selectedPlace.mainPhotoSrc = null;
   });
 
   let imgField = document.getElementById('img-field'),
@@ -644,8 +645,11 @@
 
         currentDeleteButton.addEventListener('click', function (e) {
             currentImg.src = mainImageImageBackUp;
+            idsAndPics[`id_${i}`] = null;
+            refreshCarousel()
         });
   }
+
 
 
   const csrftoken = document.querySelector('[name=csrfmiddlewaretoken]').value;
