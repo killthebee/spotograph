@@ -506,9 +506,6 @@
     },
     computed: {
         carouselImgs: function () {
-            if (!this.selectedPlace || !this.selectedPlace.imgs) {
-                return [];
-            }
             return this.selectedPlace.imgs;
         },
     },
@@ -655,6 +652,14 @@
   const csrftoken = document.querySelector('[name=csrfmiddlewaretoken]').value;
   bigBlueButton.addEventListener('click', async function (event) {
       event.preventDefault();
+
+      let imgsList = [];
+      for (key in idsAndPics) {
+          if (idsAndPics[key] != null) {
+              imgsList.push(idsAndPics[key])
+          }
+      }
+
       let data = {
           title: titleField.value,
           description: shortDescription.value,
@@ -664,7 +669,9 @@
           inst: instField.value,
           vk: vkField.value,
           main: mainImageImage.src,
+          imgs: imgsList,
       };
+
 
       try {
           let response = await fetch('http://127.0.0.1:8000/api/detail/',{
@@ -682,7 +689,7 @@
           }
 
           let result = await response.text();
-          console.log(result)
+          console.log(result);
       } catch (e) {
           alert('Ошибка при обновлении/создании данных спота');
           throw e;
