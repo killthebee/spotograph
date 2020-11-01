@@ -16,6 +16,12 @@ def valid_coord(coord):
 
 
 def fetch_imgs_files(main_img_data_uri, secondary_imgs_data_uri):
+    """
+    get data URIs and turn em into ContentFiles
+    :param main_img_data_uri: string
+    :param secondary_imgs_data_uri: list
+    :return: string and list
+    """
     main_image = None
     if main_img_data_uri:
         try:

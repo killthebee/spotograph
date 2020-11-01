@@ -4,5 +4,5 @@ from . import views
 
 urlpatterns = [
     path('', views.show_page),
-    path('cms/', views.show_cms),
+    path('cms/<int:pk>', views.show_cms),
 ]

@@ -199,6 +199,7 @@
     {#  justify-content: space-around;#}
     {#  width: 60%;#}
   </style>
+  {{ test|json_script:"test" }}
   <script id="app-heading" type="text/template">
     <nav class="navbar navbar-expand-lg navbar-light bg-light">
       <a class="navbar-brand" href="#">Spotograph</a>
@@ -321,7 +322,11 @@
           <h4 class="mb-3 mt-3">Данные спота</h4>
           <label for="browse-input">Главное изображение</label>
           <div class="preview text-center">
-            <img class="preview-img" id="main-image" src="{% static 'spotograph/mountain-bike.png' %}" alt="Preview Image" width="90" height="90"/>
+            {% if main_image %}
+              <img class="preview-img" id="main-image" src="{{ main_image.url }}" alt="Preview Image" width="90" height="90"/>
+            {% else %}
+              <img class="preview-img" id="main-image" src="{% static 'spotograph/mountain-bike.png' %}" alt="Preview Image" width="90" height="90"/>
+            {% endif %}
             <div class="browse-button">
                 <img class='onhover-image pencil' src="{% static 'spotograph/pencil.png' %}">
                 <img class='onhover-image backet' id="main-delete" src="{% static 'spotograph/delete.png' %}">
@@ -333,7 +338,11 @@
           <form class="needs-validation" novalidate>
             <div class="mb-3">
               <label for="title">Название спота</label>
-              <input type="text" class="form-control" id="title" placeholder="DefaultSpot">
+              {% if title %}
+                <input type="text" class="form-control" id="title" placeholder="{{ title }}">
+              {% else %}
+                <input type="text" class="form-control" id="title" placeholder="DefaultSpot">
+              {% endif %}
               <div class="invalid-feedback">
                 im keepin it in case
               </div>
@@ -341,14 +350,35 @@
 
             <div class="mb-3">
               <label for="short-description">Описание спота <span class="text-muted">(опционально)</span></label>
-              <textarea type="text" class="form-control" id="short-description" placeholder="short-description"></textarea>
+              {% if title %}
+                <textarea type="text" class="form-control" id="short-description" placeholder="{{ description }}"></textarea>
+              {% else %}
+                <textarea type="text" class="form-control" id="short-description" placeholder="short-description"></textarea>
+              {% endif %}
               <div class="invalid-feedback">
                 im keepin it in case
               </div>
             </div>
 
             <label for="browse-input">Фото фитчей спота</label>
-            <div class="img-container" id="img-field"></div>
+            {% if new %}
+              <div class="img-container" id="img-field-new"></div>
+            {% else %}
+              <div class="img-container">
+              {% for image in features_images %}
+                <div class="preview text-center">
+                  <img class="preview-img" src="{{ image.image.url }}" alt="Preview Image" width="90" height="90"/>
+                  <div class="browse-button">
+                      <img class='onhover-image pencil' src="{% static 'spotograph/pencil.png' %}">
+                      <img class='onhover-image backet' src="{% static 'spotograph/delete.png' %}">
+                      <input class="browse-input" type="file" id="browse-input" required name="UploadedFile" id="UploadedFile"/>
+                  </div>
+                  <span class="Error"></span>
+                </div>
+              {% endfor %}
+              </div>
+
+            {% endif %}
 
             <div class="mb-3">
               <label for="features">Описание спота <span class="text-muted">(опционально)</span></label>
@@ -483,6 +513,16 @@
 <script src="{% static "spotograph/js/leaflet-sidebar.js" %}"></script>
 </body>
 <script>
+  Object.defineProperty(Object.prototype, 'length', {
+      get: function () {
+          var size = 0, key;
+          for (key in this)
+              if (this.hasOwnProperty(key))
+                  size++;
+          return size;
+      }
+  });
+
   var sidebarApp = new Vue({
       el: '#sidebar',
       template: document.getElementById('app-template').innerHTML,
@@ -599,11 +639,7 @@
       sidebarApp.selectedPlace.mainPhotoSrc = null;
   });
 
-  let imgField = document.getElementById('img-field'),
-      imgInputTemplate = document.getElementById('img-input').innerHTML,
-      idsAndPics = {};
-
-  function refreshCarousel() {
+  function refreshCarousel(idsAndPics) {
       let imgs = [];
       for (id in idsAndPics) {
           if (idsAndPics[id]) {
@@ -611,43 +647,105 @@
           }
       }
       sidebarApp.selectedPlace.imgs = imgs;
-      console.log(sidebarApp.selectedPlace.imgs)
   }
 
-  for (let i = 0; i < 3; i++) {
-        let newImg = document.createElement('div');
-        newImg.classList.add('preview', 'text-center');
-        newImg.id = `id_${i}`;
-        idsAndPics[`id_${i}`] = null;
-        newImg.innerHTML = imgInputTemplate;
-        imgField.appendChild(newImg)
+  function makeImage(imgField, imgInputTemplate, id) {
+      let newImg = document.createElement('div');
+      newImg.classList.add('preview', 'text-center');
+      newImg.id = id;
+      newImg.innerHTML = imgInputTemplate;
+      imgField.appendChild(newImg)
   }
-  for (let i = 0; i < 3; i++) {
-        let selector = `#${Object.keys(idsAndPics )[i]}`,
-        currentImg = document.querySelector(selector + ' img'),
-        currentInput = document.querySelector(selector + ' input'),
-        currentDeleteButton = document.querySelector(selector + ' .backet'),
-        currentReader = new FileReader();
 
-        currentReader.onload = e => {
+  function checkEmptyInputs(idsAndPics) {
+      let emptyInputs = [];
+      if (idsAndPics.length > 3) {
+          for (idAndPic in idsAndPics) {
+              if (!idsAndPics[idAndPic]) {
+                  emptyInputs.push(idAndPic);
+              }
+              if (emptyInputs.length > 1) {
+                  let emptyInput = document.getElementById(emptyInputs[0]);
+                  emptyInput.parentNode.removeChild(emptyInput);
+                  delete idsAndPics[emptyInputs[0]]
+              }
+          }
+
+      }
+  }
+
+  function checkIfImgFieldIsFull(idsAndPics, imgField, imgInputTemplate) {
+      let isFull = true;
+      for (idAndPic in idsAndPics) {
+          if (!idsAndPics[idAndPic]) {
+              isFull = false;
+          }
+      }
+      if (isFull) {
+          let newPicId = `id_${Object.keys(idsAndPics).pop().slice(3) + 1}`;
+          makeImage(imgField, imgInputTemplate, newPicId);
+          appendFunctionality(newPicId, idsAndPics, imgField, imgInputTemplate)
+      }
+  }
+
+  function appendFunctionality(idAndPic, idsAndPics, imgField, imgInputTemplate) {
+      let selector = `#${idAndPic}`,
+          currentImg = document.querySelector(selector + ' img'),
+          currentInput = document.querySelector(selector + ' input'),
+          currentDeleteButton = document.querySelector(selector + ' .backet'),
+          currentReader = new FileReader();
+
+      currentReader.onload = e => {
           currentImg.src = e.target.result;
-          idsAndPics[`id_${i}`] = e.target.result;
-          refreshCarousel()
-        };
+          idsAndPics[idAndPic] = e.target.result;
+          refreshCarousel(idsAndPics);
 
-        currentInput.addEventListener('change', function (e) {
+          checkIfImgFieldIsFull(idsAndPics, imgField, imgInputTemplate);
+      };
+
+      currentInput.addEventListener('change', function (e) {
           let file = e.target.files[0];
           currentReader.readAsDataURL(file);
-        });
+      });
 
-        currentDeleteButton.addEventListener('click', function (e) {
-            currentImg.src = mainImageImageBackUp;
-            idsAndPics[`id_${i}`] = null;
-            refreshCarousel()
-        });
+      currentDeleteButton.addEventListener('click', function (e) {
+          currentImg.src = mainImageImageBackUp;
+          idsAndPics[idAndPic] = null;
+          refreshCarousel(idsAndPics);
+
+          checkEmptyInputs(idsAndPics)
+      });
   }
 
+  try {
+      let imgField = document.getElementById('img-field-new'),
+          imgInputTemplate = document.getElementById('img-input').innerHTML,
+          idsAndPics = {};
+      if (imgField) {
+          for (let i = 0; i < 3; i++) {
+              idsAndPics[`id_${i}`] = null;
+              makeImage(imgField, imgInputTemplate, `id_${i}`)
+          }
+          for (idAndPic in idsAndPics) {
+              appendFunctionality(idAndPic, idsAndPics, imgField, imgInputTemplate)
+          }
+      } else {
 
+      }
+  } catch (e) {
+      alert(`bububu ${e}`)
+  }
+
+  function loadJSON(elementId){
+      let element = document.getElementById(elementId);
+
+      if (!element){
+        log.error(`Not found element with id '${elementId}'.`)
+        return null;
+      }
+
+      return JSON.parse(element.textContent);
+    }
 
   const csrftoken = document.querySelector('[name=csrfmiddlewaretoken]').value;
   bigBlueButton.addEventListener('click', async function (event) {
