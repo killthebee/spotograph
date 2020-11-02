@@ -364,9 +364,9 @@
             {% if new %}
               <div class="img-container" id="img-field-new"></div>
             {% else %}
-              <div class="img-container">
+              <div class="img-container" id="img-field">
               {% for image in features_images %}
-                <div class="preview text-center">
+                <div class="preview text-center" id="id_{{ forloop.counter0 }}">
                   <img class="preview-img" src="{{ image.image.url }}" alt="Preview Image" width="90" height="90"/>
                   <div class="browse-button">
                       <img class='onhover-image pencil' src="{% static 'spotograph/pencil.png' %}">
@@ -377,12 +377,15 @@
                 </div>
               {% endfor %}
               </div>
-
             {% endif %}
 
             <div class="mb-3">
-              <label for="features">Описание спота <span class="text-muted">(опционально)</span></label>
-              <textarea type="text" class="form-control" id="features" placeholder="spot features"></textarea>
+              <label for="features">Описание фитч спота<span class="text-muted">(опционально)</span></label>
+              {% if features %}
+                <textarea type="text" class="form-control" id="features" placeholder="{{ features }}"></textarea>
+              {% else %}
+                <textarea type="text" class="form-control" id="features" placeholder="spot features"></textarea>
+              {% endif %}
               <div class="invalid-feedback">
                 im keepin it in case
               </div>
@@ -391,7 +394,11 @@
             <div class="row">
               <div class="col-md-6 mb-3">
                 <label for="latitude">Широта</label>
-                <input type="text" class="form-control" id="latitude" placeholder="" value="" required>
+                {% if latitude %}
+                  <input type="text" class="form-control" id="latitude" placeholder="{{ latitude }}" value="" required>
+                {% else %}
+                  <input type="text" class="form-control" id="latitude" placeholder="" value="" required>
+                {% endif %}
                 <div class="invalid-feedback">
                   im keepin it in case
                 </div>
@@ -399,7 +406,11 @@
 
               <div class="col-md-6 mb-3">
                 <label for="longitude">Долгота</label>
-                <input type="text" class="form-control" id="longitude" placeholder="" value="" required>
+                {% if longitude %}
+                  <input type="text" class="form-control" id="longitude" placeholder="{{ longitude }}" value="" required>
+                {% else %}
+                  <input type="text" class="form-control" id="longitude" placeholder="" value="" required>
+                {% endif %}
                 <div class="invalid-feedback">
                   im keepin it in case
                 </div>
@@ -408,7 +419,11 @@
 
             <div class="mb-3">
               <label for="inst-url">Ссылка на инст</label>
-              <input type="text" class="form-control" id="inst-url" placeholder="instagram.com/">
+              {% if inst %}
+                <input type="text" class="form-control" id="inst-url" placeholder="{{ inst }}">
+              {% else %}
+                <input type="text" class="form-control" id="inst-url" placeholder="instagram.com/">
+              {% endif %}
               <div class="invalid-feedback">
                 im keepin it in case
               </div>
@@ -416,7 +431,11 @@
 
             <div class="mb-3">
               <label for="vk-url">Ссылка на вк</label>
-              <input type="text" class="form-control" id="vk-url" placeholder="vk.com/">
+              {% if vk %}
+                <input type="text" class="form-control" id="vk-url" placeholder="{{ vk }}">
+              {% else %}
+                <input type="text" class="form-control" id="vk-url" placeholder="vk.com/">
+              {% endif %}
               <div class="invalid-feedback">
                 im keepin it in case
               </div>
@@ -717,10 +736,10 @@
       });
   }
 
+  let idsAndPics = {},
+      imgInputTemplate = document.getElementById('img-input').innerHTML;
   try {
-      let imgField = document.getElementById('img-field-new'),
-          imgInputTemplate = document.getElementById('img-input').innerHTML,
-          idsAndPics = {};
+      let imgField = document.getElementById('img-field-new');
       if (imgField) {
           for (let i = 0; i < 3; i++) {
               idsAndPics[`id_${i}`] = null;
@@ -730,7 +749,11 @@
               appendFunctionality(idAndPic, idsAndPics, imgField, imgInputTemplate)
           }
       } else {
-
+          imgField = document.getElementById('img-field');
+          for (let i = 0; i < imgField.children.length; i++) {
+              idsAndPics[imgField.children[i].id] = null
+          }
+          console.log(idsAndPics)
       }
   } catch (e) {
       alert(`bububu ${e}`)
