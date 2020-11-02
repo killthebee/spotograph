@@ -199,7 +199,6 @@
     {#  justify-content: space-around;#}
     {#  width: 60%;#}
   </style>
-  {{ test|json_script:"test" }}
   <script id="app-heading" type="text/template">
     <nav class="navbar navbar-expand-lg navbar-light bg-light">
       <a class="navbar-brand" href="#">Spotograph</a>
@@ -295,8 +294,8 @@
           </li>
           <li>
             <h6>Nav.</h6>
-            <a :href="selectedPlace.yaNavLink"><img class="soc-icon" src="{% static "spotograph/google-maps.svg" %}" alt="VK"></a>
-            <a :href="selectedPlace.instLink"><img class="soc-icon" src="{% static 'spotograph/ya-navt.png' %}" alt="IG"></a>
+            <a :href="selectedPlace.googleLink"><img class="soc-icon" src="{% static "spotograph/google-maps.svg" %}" alt="VK"></a>
+            <a :href="selectedPlace.yaNavLink"><img class="soc-icon" src="{% static 'spotograph/ya-navt.png' %}" alt="IG"></a>
           </li>
         </ul>
       </div>
@@ -339,7 +338,7 @@
             <div class="mb-3">
               <label for="title">Название спота</label>
               {% if title %}
-                <input type="text" class="form-control" id="title" placeholder="{{ title }}">
+                <input type="text" class="form-control" id="title" value="{{ title }}">
               {% else %}
                 <input type="text" class="form-control" id="title" placeholder="DefaultSpot">
               {% endif %}
@@ -351,7 +350,7 @@
             <div class="mb-3">
               <label for="short-description">Описание спота <span class="text-muted">(опционально)</span></label>
               {% if title %}
-                <textarea type="text" class="form-control" id="short-description" placeholder="{{ description }}"></textarea>
+                <textarea type="text" class="form-control" id="short-description">{{ description }}</textarea>
               {% else %}
                 <textarea type="text" class="form-control" id="short-description" placeholder="short-description"></textarea>
               {% endif %}
@@ -382,7 +381,7 @@
             <div class="mb-3">
               <label for="features">Описание фитч спота<span class="text-muted">(опционально)</span></label>
               {% if features %}
-                <textarea type="text" class="form-control" id="features" placeholder="{{ features }}"></textarea>
+                <textarea type="text" class="form-control" id="features">{{ features }}</textarea>
               {% else %}
                 <textarea type="text" class="form-control" id="features" placeholder="spot features"></textarea>
               {% endif %}
@@ -395,9 +394,9 @@
               <div class="col-md-6 mb-3">
                 <label for="latitude">Широта</label>
                 {% if latitude %}
-                  <input type="text" class="form-control" id="latitude" placeholder="{{ latitude }}" value="" required>
+                  <input type="text" class="form-control" id="latitude" value="{{ latitude }}" required>
                 {% else %}
-                  <input type="text" class="form-control" id="latitude" placeholder="" value="" required>
+                  <input type="text" class="form-control" id="latitude" placeholder="" required>
                 {% endif %}
                 <div class="invalid-feedback">
                   im keepin it in case
@@ -407,9 +406,9 @@
               <div class="col-md-6 mb-3">
                 <label for="longitude">Долгота</label>
                 {% if longitude %}
-                  <input type="text" class="form-control" id="longitude" placeholder="{{ longitude }}" value="" required>
+                  <input type="text" class="form-control" id="longitude" value="{{ longitude }}" required>
                 {% else %}
-                  <input type="text" class="form-control" id="longitude" placeholder="" value="" required>
+                  <input type="text" class="form-control" id="longitude" placeholder=""required>
                 {% endif %}
                 <div class="invalid-feedback">
                   im keepin it in case
@@ -420,7 +419,7 @@
             <div class="mb-3">
               <label for="inst-url">Ссылка на инст</label>
               {% if inst %}
-                <input type="text" class="form-control" id="inst-url" placeholder="{{ inst }}">
+                <input type="text" class="form-control" id="inst-url" placeholder="instagram.com/" value="{{ inst }}">
               {% else %}
                 <input type="text" class="form-control" id="inst-url" placeholder="instagram.com/">
               {% endif %}
@@ -432,7 +431,7 @@
             <div class="mb-3">
               <label for="vk-url">Ссылка на вк</label>
               {% if vk %}
-                <input type="text" class="form-control" id="vk-url" placeholder="{{ vk }}">
+                <input type="text" class="form-control" id="vk-url" value="{{ vk }}" placeholder="vk.com/">
               {% else %}
                 <input type="text" class="form-control" id="vk-url" placeholder="vk.com/">
               {% endif %}
@@ -442,60 +441,7 @@
             </div>
 
             <button class="btn btn-primary btn-lg btn-block" id="blue-button" type="submit">Сохранить</button>
-
             <hr class="mb-4">
-
-            <h4 class="mb-3">Payment ( когда буду делать донаты )</h4>
-
-            <div class="d-block my-3">
-              <div class="custom-control custom-radio">
-                <input id="credit" name="paymentMethod" type="radio" class="custom-control-input" checked required>
-                <label class="custom-control-label" for="credit">Credit card</label>
-              </div>
-              <div class="custom-control custom-radio">
-                <input id="debit" name="paymentMethod" type="radio" class="custom-control-input" required>
-                <label class="custom-control-label" for="debit">Debit card</label>
-              </div>
-              <div class="custom-control custom-radio">
-                <input id="paypal" name="paymentMethod" type="radio" class="custom-control-input" required>
-                <label class="custom-control-label" for="paypal">PayPal</label>
-              </div>
-            </div>
-            <div class="row">
-              <div class="col-md-6 mb-3">
-                <label for="cc-name">Name on card</label>
-                <input type="text" class="form-control" id="cc-name" placeholder="" required>
-                <small class="text-muted">Full name as displayed on card</small>
-                <div class="invalid-feedback">
-                  Name on card is required
-                </div>
-              </div>
-              <div class="col-md-6 mb-3">
-                <label for="cc-number">Credit card number</label>
-                <input type="text" class="form-control" id="cc-number" placeholder="" required>
-                <div class="invalid-feedback">
-                  Credit card number is required
-                </div>
-              </div>
-            </div>
-            <div class="row">
-              <div class="col-md-3 mb-3">
-                <label for="cc-expiration">Expiration</label>
-                <input type="text" class="form-control" id="cc-expiration" placeholder="" required>
-                <div class="invalid-feedback">
-                  Expiration date required
-                </div>
-              </div>
-              <div class="col-md-3 mb-3">
-                <label for="cc-cvv">CVV</label>
-                <input type="text" class="form-control" id="cc-cvv" placeholder="" required>
-                <div class="invalid-feedback">
-                  Security code required
-                </div>
-              </div>
-            </div>
-            <hr class="mb-4">
-
           </form>
         </div>
     </div>
@@ -548,15 +494,14 @@
       data: {
           selectedPlace: {
               title: "DefaultSpot",
-              placeId: '1',
               imgs: [
                 "https://sun9-30.userapi.com/c9356/v9356879/1dc/YIjbVncEbZE.jpg",
                 "https://sun9-40.userapi.com/c9356/v9356879/1e6/lBzxCveEfvg.jpg",
                 "https://sun9-67.userapi.com/c9356/v9356879/33a/JWxbeFDvEy0.jpg"
               ],
-              short_description: "Самый быстросохнущий спот Петербурга.",
-              long_description: "<p>Памп трекл с 3 траэкториями<br>Линия дёртов<br>Учебка<br>Разгонки</p>",
-              mainPhotoSrc: "https://sun9-62.userapi.com/c630127/v630127931/26e39/BXAtpXv9UIM.jpg",
+              short_description: "Дефолтное описание",
+              long_description: "<p>Дефолтная фитча<br>Дефолтная фитча<br>Дефолтная фитча<br>Дефолтная фитча</p>",
+              mainPhotoSrc: "{% static 'spotograph/mountain-bike.png' %}",
               vkLink: '#',
               instLink: '#',
               yaNavLink: '#',
@@ -641,7 +586,7 @@
 
   let mainImageInput = document.getElementById('main-input'),
       mainImageImage = document.getElementById('main-image'),
-      mainImageImageBackUp = mainImageImage.src,
+      mainImageImageBackUp = '{% static 'spotograph/mountain-bike.png' %}',
       reader = new FileReader();
 
   reader.onload = e => {
@@ -677,6 +622,7 @@
   }
 
   function checkEmptyInputs(idsAndPics) {
+      console.log(idsAndPics)
       let emptyInputs = [];
       if (idsAndPics.length > 3) {
           for (idAndPic in idsAndPics) {
@@ -685,8 +631,9 @@
               }
               if (emptyInputs.length > 1) {
                   let emptyInput = document.getElementById(emptyInputs[0]);
+                  console.log(emptyInputs)
                   emptyInput.parentNode.removeChild(emptyInput);
-                  delete idsAndPics[emptyInputs[0]]
+                  delete idsAndPics[emptyInputs[0]];
               }
           }
 
@@ -751,9 +698,23 @@
       } else {
           imgField = document.getElementById('img-field');
           for (let i = 0; i < imgField.children.length; i++) {
-              idsAndPics[imgField.children[i].id] = null
+              idsAndPics[imgField.children[i].id] = imgField.children[i].children[0].src
           }
-          console.log(idsAndPics)
+
+          sidebarApp.selectedPlace.title = titleField.value;
+          sidebarApp.selectedPlace.short_description = shortDescription.value;
+          sidebarApp.selectedPlace.long_description = spotFeatures.value;
+          sidebarApp.selectedPlace.mainPhotoSrc = mainImageImage.src;
+          sidebarApp.selectedPlace.vkLink = vkField.value;
+          sidebarApp.selectedPlace.instLink = instField.value;
+          latitudeLongitude = {'latitude': latitudeField.value, 'longitude': longitudeField.value}
+
+          refreshCarousel(idsAndPics);
+          makeNavLinks()
+          checkIfImgFieldIsFull(idsAndPics, imgField, imgInputTemplate);
+          for (idAndPic in idsAndPics) {
+              appendFunctionality(idAndPic, idsAndPics, imgField, imgInputTemplate)
+          }
       }
   } catch (e) {
       alert(`bububu ${e}`)
