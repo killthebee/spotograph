@@ -83,25 +83,26 @@
     {#}#}
     }
   </style>
-  <script id="places-geojson" type="application/json">
-    {
-      "type": "FeatureCollection",
-      "features": [
-        {
-          "type": "Feature",
-          "geometry": {
-            "type": "Point",
-            "coordinates": [30.320205, 60.002289]
-          },
-          "properties": {
-            "title": "FreakSpot",
-            "placeId": "1",
-            "detailsUrl": "{% static 'spot/freakspot.json' %}"
-          }
-        }
-      ]
-    }
-  </script>
+  {{ places_geojson|json_script:"places-geojson" }}
+{#  <script id="places-geojson" type="application/json">#}
+{#    {#}
+{#      "type": "FeatureCollection",#}
+{#      "features": [#}
+{#        {#}
+{#          "type": "Feature",#}
+{#          "geometry": {#}
+{#            "type": "Point",#}
+{#            "coordinates": [30.320205, 60.002289]#}
+{#          },#}
+{#          "properties": {#}
+{#            "title": "FreakSpot",#}
+{#            "placeId": "1",#}
+{#            "detailsUrl": "{% static 'spot/freakspot.json' %}"#}
+{#          }#}
+{#        }#}
+{#      ]#}
+{#    }#}
+{#  </script>#}
 
 
   <script id="app-template" type="text/template">
