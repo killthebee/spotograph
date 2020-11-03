@@ -3,7 +3,7 @@ from django.http import HttpResponse, JsonResponse
 from django.template import loader
 from django.urls import reverse
 
-from spots.models import Spot
+from spots.models import Spot, MainImage, FeatureImage
 
 
 def show_page(request):
@@ -44,7 +44,8 @@ def fetch_spot_details(request, pk):
     Fetch json with spot details
     """
     spot = get_object_or_404(Spot, pk=pk)
-    imgs = []
+    imgs = [image.image.url for image in spot.images.all()]
+    imgs.insert(0, spot.main_image.main_image.url)
     coords = {"lat": spot.latitude, "lng": spot.longitude}
     details = {
         "title": spot.title,
