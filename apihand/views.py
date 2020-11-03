@@ -17,20 +17,39 @@ class SpotDetail(APIView):
         serializer = SpotDetailSerializer(data=request.data)
         serializer.is_valid(raise_exception=True)
 
-        new_spot = Spot.objects.create(
-            title=serializer.validated_data['title'],
-            description=serializer.validated_data['description'],
-            features=serializer.validated_data['features'],
-            latitude=serializer.validated_data['latitude'],
-            longitude=serializer.validated_data['longitude'],
-            inst=serializer.validated_data['inst'],
-            vk=serializer.validated_data['vk'],
-        )
+        if int(request.data['pk']) == 0:
+            spot = Spot.objects.create(
+                title=serializer.validated_data['title'],
+                description=serializer.validated_data['description'],
+                features=serializer.validated_data['features'],
+                latitude=serializer.validated_data['latitude'],
+                longitude=serializer.validated_data['longitude'],
+                inst=serializer.validated_data['inst'],
+                vk=serializer.validated_data['vk'],
+            )
 
-        new_main_image = MainImage.objects.create(spot=new_spot)
-        new_main_image.main_image.save('lel222.jpg', main_image, save=True)
+            new_main_image = MainImage.objects.create(spot=spot)
+            new_main_image.main_image.save('lel222.jpg', main_image, save=True)
+
+        elif int(request.data['pk']) > 0:
+
+            pk = request.data['pk']
+            Spot.objects.filter(pk=pk).update(
+                title=serializer.validated_data['title'],
+                description=serializer.validated_data['description'],
+                features=serializer.validated_data['features'],
+                latitude=serializer.validated_data['latitude'],
+                longitude=serializer.validated_data['longitude'],
+                inst=serializer.validated_data['inst'],
+                vk=serializer.validated_data['vk'],
+            )
+
+            spot = Spot.objects.get(pk=pk)
+            spot.main_image.main_image.save('lel222.jpg', main_image, save=True)
+            spot.images.all().delete()
 
         for index, image in enumerate(secondary_imgs):
-            feature_image = FeatureImage.objects.create(place=new_spot)
-            feature_image.image.save(f"{index}_{serializer.validated_data['title']}.jpg", main_image, save=True)
+            feature_image = FeatureImage.objects.create(place=spot)
+            feature_image.image.save(f"{index}_{serializer.validated_data['title']}.jpg", image, save=True)
+
         return Response({})

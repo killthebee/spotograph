@@ -1,6 +1,7 @@
 from django.core.files.base import ContentFile
 from urllib import request as rq
 
+
 def valid_coord(coord):
     """
     validate coord
@@ -33,7 +34,7 @@ def fetch_imgs_files(main_img_data_uri, secondary_imgs_data_uri):
     secondary_imgs = []
     for data_uri in secondary_imgs_data_uri:
         try:
-            with rq.urlopen(main_img_data_uri) as response:
+            with rq.urlopen(data_uri) as response:
                 data = response.read()
                 secondary_imgs.append(ContentFile(data))
         except:

@@ -631,7 +631,6 @@
               }
               if (emptyInputs.length > 1) {
                   let emptyInput = document.getElementById(emptyInputs[0]);
-                  console.log(emptyInputs)
                   emptyInput.parentNode.removeChild(emptyInput);
                   delete idsAndPics[emptyInputs[0]];
               }
@@ -752,6 +751,7 @@
           vk: vkField.value,
           main: mainImageImage.src,
           imgs: imgsList,
+          pk: window.location.href.split('/')[window.location.href.split('/').length - 1],
       };
 
 
