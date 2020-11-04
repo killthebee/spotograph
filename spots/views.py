@@ -53,6 +53,8 @@ def fetch_spot_details(request, pk):
         "description_short": spot.description,
         "description_long": spot.features,
         "coordinates": coords,
+        'vk_link': spot.vk,
+        'inst_link': spot.inst,
     }
     return JsonResponse(details, safe=False, json_dumps_params={'ensure_ascii': False})
 

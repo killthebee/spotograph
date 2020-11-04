@@ -84,26 +84,6 @@
     }
   </style>
   {{ places_geojson|json_script:"places-geojson" }}
-{#  <script id="places-geojson" type="application/json">#}
-{#    {#}
-{#      "type": "FeatureCollection",#}
-{#      "features": [#}
-{#        {#}
-{#          "type": "Feature",#}
-{#          "geometry": {#}
-{#            "type": "Point",#}
-{#            "coordinates": [30.320205, 60.002289]#}
-{#          },#}
-{#          "properties": {#}
-{#            "title": "FreakSpot",#}
-{#            "placeId": "1",#}
-{#            "detailsUrl": "{% static 'spot/freakspot.json' %}"#}
-{#          }#}
-{#        }#}
-{#      ]#}
-{#    }#}
-{#  </script>#}
-
 
   <script id="app-template" type="text/template">
     <div v-bind:class="{'sidebar-content': 1, 'bg-white': selectedPlace, 'bg-secondary': !selectedPlace}">
@@ -173,8 +153,8 @@
         <ul class="soc-nav">
         <li>
           <h6>Soc.</h6>
-          <img class="soc-icon" src="{%  static "spotograph/vkn.svg" %}" alt="VK">
-          <img class="soc-icon" src="{% static 'spotograph/instagram.svg' %}" alt="IG">
+          <a :href="selectedPlace.vkLink"><img class="soc-icon" src="{%  static "spotograph/vkn.svg" %}" alt="VK"></a>
+          <a :href="selectedPlace.instLink"><img class="soc-icon" src="{% static 'spotograph/instagram.svg' %}" alt="IG"></a>
         </li>
         <li>
           <h6>Nav.</h6>
@@ -406,7 +386,15 @@
           imgs: data.imgs || [],
           short_description: data.description_short,
           long_description: data.description_long,
+          vkLink: data.vk_link,
+          instLink: data.inst_link,
         };
+          if (sidebarApp.selectedPlace.vkLink.length < 5) {
+              sidebarApp.selectedPlace.vkLink = '#'
+          }
+        if (sidebarApp.selectedPlace.instLink.length < 5) {
+              sidebarApp.selectedPlace.instLink = '#'
+          }
       } finally {
         if (sidebarApp.loadingPlaceId == placeId){
           sidebarApp.loadingPlaceId = null;
