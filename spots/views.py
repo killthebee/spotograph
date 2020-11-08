@@ -1,5 +1,7 @@
 from django.shortcuts import render, get_object_or_404
 from django.http import HttpResponse, JsonResponse
+from django.contrib.auth.views import LoginView, LogoutView
+from django.contrib.auth.mixins import LoginRequiredMixin
 from django.template import loader
 from django.urls import reverse
 
@@ -75,3 +77,11 @@ def show_cms(request, pk):
             'features_images': spot.images.all()
         }
     return render(request, 'cms.html', context)
+
+
+class SpotLoginView(LoginView):
+    template_name = 'login.html'
+
+
+class SpotLogoutView(LoginRequiredMixin, LogoutView):
+    template_name = 'logout.html'
