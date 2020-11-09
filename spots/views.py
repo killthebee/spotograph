@@ -1,11 +1,16 @@
-from django.shortcuts import render, get_object_or_404
+from django.shortcuts import render, get_object_or_404, redirect
 from django.http import HttpResponse, JsonResponse
 from django.contrib.auth.views import LoginView, LogoutView
 from django.contrib.auth.mixins import LoginRequiredMixin
+from django.contrib.auth.models import User
+from django.views.generic.edit import CreateView
+from django.views.generic.base import TemplateView
 from django.template import loader
 from django.urls import reverse
+from django.urls import reverse_lazy
 
 from spots.models import Spot, MainImage, FeatureImage
+from spots.forms import SignUpForm
 
 
 def show_page(request):
@@ -85,3 +90,14 @@ class SpotLoginView(LoginView):
 
 class SpotLogoutView(LoginRequiredMixin, LogoutView):
     template_name = 'logout.html'
+
+
+class RegisterUserView(CreateView):
+    model = User
+    template_name = 'signup.html'
+    form_class = SignUpForm
+    success_url = reverse_lazy('signup_done')
+
+
+class RegisterDoneView(TemplateView):
+    template_name = 'signup_done.html'

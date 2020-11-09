@@ -1,0 +1,90 @@
+{% load static %}
+
+{% load bootstrap4 %}
+
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="utf-8">
+  <title>Карта мэтэбэ спотов</title>
+
+  <link rel="shortcut icon" href="{% static "spotograph/favicon.png" %}" type="image/png">
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.6.0/dist/leaflet.css"
+        integrity="sha512-xwE/Az9zrjBIphAcBb3F6JVqxf46+CDLwfLMHloNu6KEQCAWi6HcDUbeOfBIptF7tcCzusKFjFw2yuvEpDL9wQ=="
+        crossorigin=""/>
+  <link rel="stylesheet" href="{% static "spotograph/css/leaflet-sidebar.css" %}"/>
+  <link rel="stylesheet" href="{% static "spotograph/css/chat.css" %}"/>
+
+  <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css"
+        integrity="sha384-9aIt2nRpC12Uk9gS9baDl411NQApFmC26EwAOH8WgZl5MYYxFfc+NcPb1dKGj7Sk" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://unpkg.com/@ansur/leaflet-pulse-icon@0.1.1/dist/L.Icon.Pulse.css">
+
+  <style>
+    body {
+      padding: 0;
+      margin: 0;
+      position: relative;
+    }
+
+    html, body, #map {
+      height: 98%;
+    }
+
+    .place-description img {
+      max-width: 100%;
+    }
+
+    .sidebar-container {
+      font: 12px/1.5 "Helvetica Neue", Arial, Helvetica, sans-serif;
+      box-sizing: border-box;
+      padding: 10px;
+      width: 45%;
+
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      -ms-transform: translate(-50%, -50%); /* IE 9 */
+      -webkit-transform: translate(-50%, -50%); /* Chrome, Safari, Opera */
+    }
+
+    .sidebar-control {
+      height: 100%;
+      width: 100%;
+      overflow: auto;
+      box-sizing: border-box;
+      font-size: 1.1em;
+      background: white;
+      box-shadow: 0 1px 7px rgba(0, 0, 0, 0.65);
+      border-radius: 4px;
+    }
+  </style>
+</head>
+<body class="bg-dark">
+<div id="header"></div>
+<div style="display: flex; justify-content: space-around">
+  <div class="sidebar-container">
+    <div class="sidebar-control">
+        <div class="col order-md-1">
+
+          <h4 class="mb-3 mt-3">Аутентификация</h4>
+
+          {% if user.is_authenticated %}
+            <p>Вы уже залогинены</p>
+          {% else %}
+            <form method="post">
+                {% csrf_token %}
+                {% bootstrap_form form layout='horizontal' %}
+                <input type="hidden" name="next" value="{{ next }}">
+                {% buttons submit='Зарегестрироваться' %}{% endbuttons %}
+            </form>
+          {% endif %}
+        </div>
+    </div>
+  </div>
+</div>
+</body>
+</html>
