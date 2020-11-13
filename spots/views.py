@@ -42,7 +42,9 @@ def show_page(request):
         "type": "FeatureCollection",
         "features": features
     }
-    context = {"places_geojson": places_geojson}
+    context = {"places_geojson": places_geojson,
+                "user_spots": request.user.spots.all(),
+    }
     return render(request, 'index.html', context)
 
 
@@ -68,19 +70,25 @@ def fetch_spot_details(request, pk):
 
 def show_cms(request, pk):
     context = {'new': 'new'}
-    if pk > 0:
-        spot = get_object_or_404(Spot, pk=pk)
-        context = {
-            'title': spot.title,
-            'description': spot.description,
-            'features': spot.features,
-            'latitude': spot.latitude,
-            'longitude': spot.longitude,
-            'inst': spot.inst,
-            'vk': spot.vk,
-            'main_image': spot.main_image.main_image,
-            'features_images': spot.images.all()
-        }
+    try:
+        owned_spots = request.user.spots.all()
+        if pk > 0:
+            spot = get_object_or_404(Spot, pk=pk)
+            if spot in owned_spots:
+                context = {
+                    'title': spot.title,
+                    'description': spot.description,
+                    'features': spot.features,
+                    'latitude': spot.latitude,
+                    'longitude': spot.longitude,
+                    'inst': spot.inst,
+                    'vk': spot.vk,
+                    'main_image': spot.main_image.main_image,
+                    'features_images': spot.images.all()
+                }
+    except AttributeError:
+        return redirect('login')
+    context['user_spots'] = request.user.spots.all()
     return render(request, 'cms.html', context)
 
 

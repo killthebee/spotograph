@@ -1,9 +1,9 @@
 from django.db import models
 from tinymce.models import HTMLField
+from django.contrib.auth.models import User
 
 
 class Spot(models.Model):
-
     title = models.CharField(max_length=200, verbose_name='Название Спота')
     description = models.TextField(verbose_name='Короткое описание', default='Дефолтное описание спота...')
     features = HTMLField(default='Дефолтное описание фитч спота...', verbose_name='Длинное описание')
@@ -11,6 +11,11 @@ class Spot(models.Model):
     longitude = models.FloatField(verbose_name='Долгота')
     inst = models.CharField(max_length=50, verbose_name='Ссылка на инсту', blank=True)
     vk = models.CharField(max_length=50, verbose_name='Ссылка на вк', blank=True)
+    owner = models.ForeignKey(User,
+                              verbose_name='Владелец',
+                              on_delete=models.CASCADE,
+                              related_name='spots',
+    )
 
     def __str__(self):
         return self.title

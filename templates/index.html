@@ -175,30 +175,34 @@
 
       <div class="collapse navbar-collapse" id="navbarSupportedContent">
         <ul class="navbar-nav mr-auto">
-          <li class="nav-item active">
-            {% if not user.is_authenticated %}
+          {% if not user.is_authenticated %}
+            <li class="nav-item active">
               <a class="nav-link" href="{% url 'login' %}">Войти<span class="sr-only">(current)</span></a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link  disabled" href="#">Добавить СПОТ<span class="sr-only">(current)</span></a>
+            </li>
           {% else %}
+            <li class="nav-item active">
               <a class="nav-link" href="{% url 'logout' %}">Выйти<span class="sr-only">(current)</span></a>
-          {% endif %}
-          </li>
-          <li class="nav-item active">
+            </li>
+            <li class="nav-item active">
             <a class="nav-link" href="{%  url 'cms' 0 %}">Добавить СПОТ<span class="sr-only">(current)</span></a>
           </li>
-{#          <li class="nav-item">#}
-{#            <a class="nav-link disabled" href="#">Мои СПОТы</a>#}
-{#          </li>#}
-          <li class="nav-item dropdown">
-            <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-              Dropdown
-            </a>
-            <div class="dropdown-menu" aria-labelledby="navbarDropdown">
-              <a class="dropdown-item" href="#">Action</a>
-              <a class="dropdown-item" href="#">Another action</a>
-              <div class="dropdown-divider"></div>
-              <a class="dropdown-item" href="#">Something else here</a>
-            </div>
-          </li>
+          {% endif %}
+          {% if user_spots %}
+            <li class="nav-item dropdown">
+              <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                Мои споты
+              </a>
+              <div class="dropdown-menu" aria-labelledby="navbarDropdown">
+                {% for spot in user_spots %}
+                  <a class="dropdown-item" href="{% url 'cms' spot.pk %}">{{ spot.title }}</a>
+                {% endfor %}
+              </div>
+            </li>
+          {% endif %}
+
          </ul>
 
         <form class="form-inline my-2 my-lg-0">

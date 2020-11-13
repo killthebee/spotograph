@@ -26,6 +26,7 @@ class SpotDetail(APIView):
                 longitude=serializer.validated_data['longitude'],
                 inst=serializer.validated_data['inst'],
                 vk=serializer.validated_data['vk'],
+                owner=request.user,
             )
 
             new_main_image = MainImage.objects.create(spot=spot)

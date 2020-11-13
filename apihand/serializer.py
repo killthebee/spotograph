@@ -22,4 +22,4 @@ class SpotDetailSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Spot
-        fields = "__all__"
+        exclude = ('owner', )
