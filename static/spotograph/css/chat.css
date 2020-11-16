@@ -1,4 +1,4 @@
-.container{max-width:1170px; margin:auto;}
+.container{max-width:1170px; margin:auto; height: 100%}
 img{ max-width:100%;}
 .inbox_people {
     background: #f8f8f8 none repeat scroll 0 0;
@@ -89,7 +89,6 @@ img{ max-width:100%;}
 .mesgs {
     float: left;
     padding: 30px 15px 0 25px;
-    width: 60%;
 }
 
 .sent_msg p {
