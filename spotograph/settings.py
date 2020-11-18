@@ -44,6 +44,7 @@ INSTALLED_APPS = [
     'rest_framework',
     'bootstrap4',
     'chat',
+    'channels',
 ]
 
 MIDDLEWARE = [
@@ -134,3 +135,5 @@ MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 MEDIA_URL = '/media/'
 
 LOGIN_REDIRECT_URL = '/'
+
+ASGI_APPLICATION = 'spotograph.routing.application'

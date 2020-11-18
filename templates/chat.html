@@ -133,4 +133,8 @@
   </div>
 </div>
 </body>
+<script>
+    let url = 'ws://' + window.location.host + '/ws/chat/' + '{{ spot.id }}/';
+    let chatSocket = new WebSocket(url);
+</script>
 </html>
