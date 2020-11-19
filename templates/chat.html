@@ -136,5 +136,67 @@
 <script>
     let url = 'ws://' + window.location.host + '/ws/chat/' + '{{ spot.id }}/';
     let chatSocket = new WebSocket(url);
+
+    let chat = document.querySelector('.msg_history'),
+        inputField = document.querySelector('.write_msg'),
+        inputButton = document.querySelector('.msg_send_btn');
+
+    function addMessage(messageText) {
+        let newMessage = document.createElement('div'),
+            newMessageImage = document.createElement('div'),
+            newReceivedMessage = document.createElement('div'),
+            newReceivedWidthMessage = document.createElement('div'),
+            newMessageImageImage = document.createElement('img'),
+            newMessageText = document.createElement('p'),
+            newMessageTimeDate = document.createElement('span');
+
+        newMessageImageImage.src = 'https://ptetutorials.com/images/user-profile.png';
+        newMessageImageImage.alt = 'sunil';
+        newMessageImage.appendChild(newMessageImageImage);
+        newMessageImage.classList.add('incoming_msg_img');
+        newMessage.appendChild(newMessageImage);
+        newMessage.classList.add('incoming_msg');
+
+        newMessageText.innerText = messageText;
+        newMessageTimeDate.classList.add('time_date');
+        newMessageTimeDate.innerText = ' 11:01 AM | June 9';
+        newReceivedWidthMessage.appendChild(newMessageText);
+        newReceivedWidthMessage.appendChild(newMessageTimeDate);
+        newReceivedWidthMessage.classList.add('received_withd_msg');
+        newReceivedMessage.appendChild(newReceivedWidthMessage);
+        newReceivedMessage.classList.add('received_msg');
+        newMessage.appendChild(newReceivedMessage);
+
+        chat.appendChild(newMessage);
+        chat.scrollTop = chat.scrollHeight
+    }
+
+    chatSocket.onmessage = function (e) {
+        let data = JSON.parse(e.data),
+            message = data.message;
+
+        addMessage(message);
+    };
+
+    chatSocket.onclose = function (e) {
+        console.error('Chat socket closed unexpectedly');
+    }
+
+    function sendMessage() {
+        if (inputField.value.length > 0) {
+            let message = inputField.value;
+            chatSocket.send(JSON.stringify({'message': message}));
+            inputField.value = '';
+            inputField.focus();
+        }
+    }
+
+    inputButton.addEventListener('click', sendMessage);
+    inputField.addEventListener('keyup', function (e) {
+        if (e.keyCode === 13) {
+            sendMessage()
+        }
+    })
+
 </script>
 </html>
