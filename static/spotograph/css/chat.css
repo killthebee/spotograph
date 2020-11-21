@@ -89,6 +89,7 @@ img{ max-width:100%;}
 .mesgs {
     float: left;
     padding: 30px 15px 0 25px;
+    width: 100%;
 }
 
 .sent_msg p {
@@ -131,4 +132,5 @@ img{ max-width:100%;}
 .msg_history {
     height: 516px;
     overflow-y: auto;
+    width: 100%;
 }

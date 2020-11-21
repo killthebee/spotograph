@@ -51,11 +51,6 @@
       -ms-transform: translate(-50%, -50%); /* IE 9 */
       -webkit-transform: translate(-50%, -50%); /* Chrome, Safari, Opera */
     }
-    @media (max-width: 768px) {
-       .sidebar-container {
-      width: 100%;
-    }
-
     .sidebar-control {
       height: 100%;
       width: 100%;
@@ -65,6 +60,12 @@
       background: white;
       box-shadow: 0 1px 7px rgba(0, 0, 0, 0.65);
       border-radius: 4px;
+    }
+
+    @media (max-width: 768px) {
+       .sidebar-container {
+         width: 100%;
+       }
     }
   </style>
 </head>
@@ -141,31 +142,48 @@
         inputField = document.querySelector('.write_msg'),
         inputButton = document.querySelector('.msg_send_btn');
 
-    function addMessage(messageText) {
-        let newMessage = document.createElement('div'),
-            newMessageImage = document.createElement('div'),
-            newReceivedMessage = document.createElement('div'),
-            newReceivedWidthMessage = document.createElement('div'),
-            newMessageImageImage = document.createElement('img'),
-            newMessageText = document.createElement('p'),
-            newMessageTimeDate = document.createElement('span');
+    function addMessage(messageText, user, datetime) {
 
-        newMessageImageImage.src = 'https://ptetutorials.com/images/user-profile.png';
-        newMessageImageImage.alt = 'sunil';
-        newMessageImage.appendChild(newMessageImageImage);
-        newMessageImage.classList.add('incoming_msg_img');
-        newMessage.appendChild(newMessageImage);
-        newMessage.classList.add('incoming_msg');
+        let newMessage = document.createElement('div');
+        if (user === '{{ request.user }}'){
+            let newSentMessage = document.createElement('div'),
+                newMessageText = document.createElement('p'),
+                newMessageTimeDate = document.createElement('span');
 
-        newMessageText.innerText = messageText;
-        newMessageTimeDate.classList.add('time_date');
-        newMessageTimeDate.innerText = ' 11:01 AM | June 9';
-        newReceivedWidthMessage.appendChild(newMessageText);
-        newReceivedWidthMessage.appendChild(newMessageTimeDate);
-        newReceivedWidthMessage.classList.add('received_withd_msg');
-        newReceivedMessage.appendChild(newReceivedWidthMessage);
-        newReceivedMessage.classList.add('received_msg');
-        newMessage.appendChild(newReceivedMessage);
+            newMessageText.innerText = messageText;
+            newMessageTimeDate.classList.add('time_date');
+            newMessageTimeDate.innerText = datetime;
+            newSentMessage.appendChild(newMessageText);
+            newSentMessage.appendChild(newMessageTimeDate);
+            newSentMessage.classList.add('sent_msg');
+            newMessage.appendChild(newSentMessage);
+            newMessage.classList.add('outgoing_msg');
+        } else {
+            let newMessage = document.createElement('div'),
+                newMessageImage = document.createElement('div'),
+                newReceivedMessage = document.createElement('div'),
+                newReceivedWidthMessage = document.createElement('div'),
+                newMessageImageImage = document.createElement('img'),
+                newMessageText = document.createElement('p'),
+                newMessageTimeDate = document.createElement('span');
+
+            newMessageImageImage.src = 'https://ptetutorials.com/images/user-profile.png';
+            newMessageImageImage.alt = 'sunil';
+            newMessageImage.appendChild(newMessageImageImage);
+            newMessageImage.classList.add('incoming_msg_img');
+            newMessage.appendChild(newMessageImage);
+            newMessage.classList.add('incoming_msg');
+
+            newMessageText.innerText = messageText;
+            newMessageTimeDate.classList.add('time_date');
+            newMessageTimeDate.innerText = ' 11:01 AM | June 9';
+            newReceivedWidthMessage.appendChild(newMessageText);
+            newReceivedWidthMessage.appendChild(newMessageTimeDate);
+            newReceivedWidthMessage.classList.add('received_withd_msg');
+            newReceivedMessage.appendChild(newReceivedWidthMessage);
+            newReceivedMessage.classList.add('received_msg');
+            newMessage.appendChild(newReceivedMessage);
+        }
 
         chat.appendChild(newMessage);
         chat.scrollTop = chat.scrollHeight
@@ -173,9 +191,12 @@
 
     chatSocket.onmessage = function (e) {
         let data = JSON.parse(e.data),
-            message = data.message;
+            message = data.message,
+            dateOptions = {hour: 'numeric', minute: 'numeric', hour12: false},
+            datetime = new Date(data['datetime']).toLocaleDateString('ru-RU', dateOptions);
+            user = data.user;
 
-        addMessage(message);
+        addMessage(message, user, datetime);
     };
 
     chatSocket.onclose = function (e) {

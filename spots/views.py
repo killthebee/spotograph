@@ -42,9 +42,12 @@ def show_page(request):
         "type": "FeatureCollection",
         "features": features
     }
-    context = {"places_geojson": places_geojson,
-                "user_spots": request.user.spots.all(),
-    }
+    context = {"places_geojson": places_geojson}
+    try:
+        context['user_spots'] = request.user.spots.all()
+    except AttributeError:
+        context['user_spots'] = None
+
     return render(request, 'index.html', context)
 
 
@@ -88,7 +91,10 @@ def show_cms(request, pk):
                 }
     except AttributeError:
         return redirect('login')
-    context['user_spots'] = request.user.spots.all()
+    try:
+        context['user_spots'] = request.user.spots.all()
+    except AttributeError:
+        context['user_spots'] = None
     return render(request, 'cms.html', context)
 
 
