@@ -1,36 +1,35 @@
 import json
-from channels.generic.websocket import WebsocketConsumer
-from asgiref.sync import async_to_sync
+from channels.generic.websocket import AsyncWebsocketConsumer
 from django.utils import timezone
 
 
-class ChatConsumer(WebsocketConsumer):
-    def connect(self):
+class ChatConsumer(AsyncWebsocketConsumer):
+    async def connect(self):
         """Join chat"""
         self.user = self.scope['user']
         self.id = self.scope['url_route']['kwargs']['spot_id']
         self.chat_group_name = f'chat_{self.id}'
-        async_to_sync(self.channel_layer.group_add)(
+        await self.channel_layer.group_add(
             self.chat_group_name,
             self.channel_name
         )
-        self.accept()
+        await self.accept()
 
-    def disconnect(self, code):
+    async def disconnect(self, code):
         """leave chat"""
-        async_to_sync(self.channel_layer.group_discard)(
+        await self.channel_layer.group_discard(
             self.chat_group_name,
             self.channel_name
         )
 
-    def receive(self, text_data):
+    async def receive(self, text_data):
         # receive message from WS
         text_data_json = json.loads(text_data)
         message = text_data_json['message']
         now = timezone.now()
 
         # send message to group
-        async_to_sync(self.channel_layer.group_send)(
+        await self.channel_layer.group_send(
             self.chat_group_name, {
                 'type': 'chat_message',
                 'message': message,
@@ -39,6 +38,6 @@ class ChatConsumer(WebsocketConsumer):
             }
         )
 
-    def chat_message(self, event):
+    async def chat_message(self, event):
         """Send message to WS"""
-        self.send(text_data=json.dumps(event))
+        await self.send(text_data=json.dumps(event))
