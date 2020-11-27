@@ -58,6 +58,12 @@ class ChatMessage(models.Model):
         verbose_name='Пользователь',
         on_delete=models.CASCADE,
     )
+    spot = models.ForeignKey(
+        Spot,
+        verbose_name='Спот',
+        on_delete=models.CASCADE,
+        related_name='messages'
+    )
 
     def __str__(self):
         return f'Сообщение от {self.user.username}№{self.id}'
