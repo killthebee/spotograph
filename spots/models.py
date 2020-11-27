@@ -48,3 +48,20 @@ class FeatureImage(models.Model):
     class Meta:
         verbose_name = 'Изображение фитч спота'
         verbose_name_plural = 'Изображения фитч спота'
+
+
+class ChatMessage(models.Model):
+    text = models.TextField('Текст')
+    time = models.DateTimeField('ДатаВремя', auto_now_add=True)
+    user = models.ForeignKey(
+        User,
+        verbose_name='Пользователь',
+        on_delete=models.CASCADE,
+    )
+
+    def __str__(self):
+        return f'Сообщение от {self.user.username}№{self.id}'
+
+    class Meta:
+        verbose_name = 'Сообщение'
+        verbose_name_plural = 'Сообщения'
