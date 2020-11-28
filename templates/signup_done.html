@@ -67,9 +67,14 @@
     <div class="sidebar-control">
         <div class="col order-md-1">
 
-          <h4 class="mb-3 mt-3">Вы зарегестрировались. Перейдите по ссылки из email сообщение для активации вашей учетной записи</h4>
+          <h4 class="mb-3 mt-3">Вы зарегестрировались. Перейдите по ссылки из email сообщение для активации вашей учетной записи. Если я это допилю</h4>
         </div>
     </div>
   </div>
 </body>
+<script>
+  setTimeout(function () {
+       window.location.href = "{% url 'index' %}";
+    }, 4000);
+</script>
 </html>

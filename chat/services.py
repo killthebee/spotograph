@@ -4,7 +4,7 @@ def serialize_messages(messages):
     for message in messages:
         serialized_message = {
             'text': message.text,
-            'time': message.time,
+            'time': message.time.strftime("%Y-%m-%d %H:%M:%S"),
             'user': message.user.username,
         }
         serialized_messages.append(serialized_message)

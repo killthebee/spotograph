@@ -72,7 +72,7 @@
 <div style="display: flex; justify-content: space-around">
   <div class="sidebar-container">
     <div class="sidebar-control">
-        <div class="col order-md-1">
+        <div class="col order-md-1 mb-3">
 
           <h4 class="mb-3 mt-3">Аутентификация</h4>
 
@@ -85,6 +85,7 @@
                 <input type="hidden" name="next" value="{{ next }}">
                 {% buttons submit='Войти' %}{% endbuttons %}
             </form>
+            <a href="{% url 'signup' %}">Зарегестрироваться</a>
           {% endif %}
         </div>
     </div>

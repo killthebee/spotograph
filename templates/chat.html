@@ -42,10 +42,10 @@
       box-sizing: border-box;
       padding: 10px;
       width: 45%;
-      height: 100%;
+      height: 92%;
 
       position: absolute;
-      top: 50%;
+      top: 55%;
       left: 50%;
       transform: translate(-50%, -50%);
       -ms-transform: translate(-50%, -50%); /* IE 9 */
@@ -68,6 +68,52 @@
        }
     }
   </style>
+  <script id="app-heading" type="text/template">
+    <nav class="navbar navbar-expand-lg navbar-light bg-light" style="height: 9%">
+      <a class="navbar-brand" href="{% url 'index' %}">Spotograph</a>
+      <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+      </button>
+
+      <div class="collapse navbar-collapse" id="navbarSupportedContent">
+        <ul class="navbar-nav mr-auto">
+          {% if not user.is_authenticated %}
+            <li class="nav-item active">
+              <a class="nav-link" href="{% url 'login' %}">Войти<span class="sr-only">(current)</span></a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link  disabled" href="#">Добавить СПОТ<span class="sr-only">(current)</span></a>
+            </li>
+          {% else %}
+            <li class="nav-item active">
+              <a class="nav-link" href="{% url 'logout' %}">Выйти<span class="sr-only">(current)</span></a>
+            </li>
+            <li class="nav-item active">
+            <a class="nav-link" href="{%  url 'cms' 0 %}">Добавить СПОТ<span class="sr-only">(current)</span></a>
+          </li>
+          {% endif %}
+          {% if user_spots %}
+            <li class="nav-item dropdown">
+              <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                Мои споты
+              </a>
+              <div class="dropdown-menu" aria-labelledby="navbarDropdown">
+                {% for spot in user_spots %}
+                  <a class="dropdown-item" href="{% url 'cms' spot.pk %}">{{ spot.title }}</a>
+                {% endfor %}
+              </div>
+            </li>
+          {% endif %}
+
+         </ul>
+
+        <form class="form-inline my-2 my-lg-0">
+          <input class="form-control mr-sm-2" type="search" placeholder="Название СПОТа" aria-label="Search">
+          <button class="btn btn-outline-success my-2 my-sm-0" type="submit">Поиск</button>
+        </form>
+      </div>
+    </nav>
+  </script>
 </head>
 <body class="bg-dark">
 <div id="header"></div>
@@ -96,8 +142,17 @@
   </div>
 </div>
 </body>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/vue/2.6.11/vue.min.js" integrity="sha256-ngFW3UnAN0Tnm76mDuu7uUtYEcG3G5H1+zioJw3t+68=" crossorigin="anonymous"></script>
 {{ messages|json_script:"preload_messages" }}
 <script>
+    let headerApp = new Vue({
+        el: '#header',
+        template: document.getElementById('app-heading').innerHTML,
+        data: {
+            showHeader: true
+        }
+    });
+
     function loadJSON(elementId){
         let element = document.getElementById(elementId);
 
