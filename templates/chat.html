@@ -102,7 +102,7 @@
         let element = document.getElementById(elementId);
 
         if (!element){
-          log.error(`Not found element with id '${elementId}'.`)
+          log.error(`Not found element with id '${elementId}'.`);
           return null;
         }
 
@@ -158,10 +158,8 @@
             newReceivedMessage.appendChild(newReceivedWidthMessage);
             newReceivedMessage.classList.add('received_msg');
             newMessage.appendChild(newReceivedMessage);
-            console.log(newMessage)
             chat.appendChild(newMessage);
         }
-
 
         chat.scrollTop = chat.scrollHeight
     }

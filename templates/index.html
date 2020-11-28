@@ -98,7 +98,7 @@
         </div>
       </div>
 
-      <div class="place-description" v-if="selectedPlace" style="font-size: 15px">
+      <template class="place-description" v-if="selectedPlace" style="font-size: 15px">
 
         <img v-if="mainPhotoSrc" v-bind:src="mainPhotoSrc" class="d-block shadow mb-3 mx-auto rounded" v-bind:alt="selectedPlace.title">
 
@@ -136,20 +136,21 @@
           </template>
         </div>
         <div v-html="selectedPlace.long_description"></div>
-{% endverbatim %}
 
-        <h5>Последние сообщения:</h5>
-        <div class="mesgs" style="width: 100%; padding: 0">
-            <div class="incoming_msg" style="display: flex; align-items: center">
-                <div class="incoming_msg_img" style="width: 10%"> <img src="https://ptetutorials.com/images/user-profile.png" alt="sunil"> </div>
-                <div class="received_msg">
-                    <div class="received_withd_msg" style="width: 100%">
-                        <p>Test which is a new approach to have all
-                            solutions teeest sssest heeeeest</p>
-                        <span class="time_date"> 11:01 AM    |    June 9</span></div>
-                </div>
-            </div>
-      </div>
+        <template v-if="selectedPlace.messages.length">
+          <h5>Последние сообщения:</h5>
+          <div class="mesgs" style="width: 100%; padding: 0">
+              <div v-for="message in selectedPlace.messages" class="incoming_msg" style="display: flex; align-items: center">
+                  <div class="incoming_msg_img" style="width: 10%"> <img src="https://ptetutorials.com/images/user-profile.png" alt="sunil"> </div>
+                  <div class="received_msg">
+                      <div class="received_withd_msg" style="width: 100%">
+                          <p>{{ message.text }}</p>
+                          <span class="time_date"> {{ message.time }}</span></div>
+                  </div>
+              </div>
+          </div>
+        </template>
+{% endverbatim %}
         <ul class="soc-nav">
         <li>
           <h6>Soc.</h6>
@@ -275,7 +276,7 @@
       let element = document.getElementById(elementId);
 
       if (!element){
-        log.error(`Not found element with id '${elementId}'.`)
+        log.error(`Not found element with id '${elementId}'.`);
         return null;
       }
 
@@ -339,6 +340,7 @@
           // imgs
           // short_description
           // long_description
+          // etc
       },
       computed: {
         promptVisible: function () {
@@ -408,7 +410,9 @@
           instLink: data.inst_link,
           yaNavLink: `yandexnavi://build_route_on_map?lat_to=${data.latitude}&lon_to=${data.longitude}`,
           googleLink: `maps://www.google.com/maps/dir/?api=1&travelmode=driving&layer=traffic&destination=${data.latitude},${data.longitude}`,
+          messages: data.messages
         };
+        console.log(sidebarApp.selectedPlace.messages)
         if (sidebarApp.selectedPlace.vkLink.length < 5) {
             sidebarApp.selectedPlace.vkLink = '#'
           }

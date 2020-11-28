@@ -11,6 +11,7 @@ from django.urls import reverse_lazy
 
 from spots.models import Spot, MainImage, FeatureImage
 from spots.forms import SignUpForm
+from chat.services import serialize_messages
 
 
 def show_page(request):
@@ -59,6 +60,7 @@ def fetch_spot_details(request, pk):
     imgs = [image.image.url for image in spot.images.all()]
     imgs.insert(0, spot.main_image.main_image.url)
     coords = {"lat": spot.latitude, "lng": spot.longitude}
+    messages = serialize_messages(spot.messages.order_by('-time').all()[:3])
     details = {
         "title": spot.title,
         "imgs": imgs,
@@ -67,6 +69,7 @@ def fetch_spot_details(request, pk):
         "coordinates": coords,
         'vk_link': spot.vk,
         'inst_link': spot.inst,
+        'messages': messages,
     }
     return JsonResponse(details, safe=False, json_dumps_params={'ensure_ascii': False})
 
