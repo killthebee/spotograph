@@ -108,7 +108,7 @@
         <div class="center" style="margin-bottom: 20px">
           <div>
             <button class="btn btn-light-moon btn-fab">Задонатить!</button>
-            <button class="btn btn-cool-blues btn-fab">Чат</button>
+            <a v-bind:href="selectedPlace.chatUrl"><button class="btn btn-cool-blues btn-fab">Чат</button></a>
           </div>
         </div>
 
@@ -263,7 +263,6 @@
     }
 
     let places = loadJSON('places-geojson');
-    log.debug('Load GeoJSON for places', places);
 
 
     L.geoJSON(places, {
@@ -389,7 +388,8 @@
           instLink: data.inst_link,
           yaNavLink: `yandexnavi://build_route_on_map?lat_to=${data.latitude}&lon_to=${data.longitude}`,
           googleLink: `maps://www.google.com/maps/dir/?api=1&travelmode=driving&layer=traffic&destination=${data.latitude},${data.longitude}`,
-          messages: data.messages
+          messages: data.messages,
+          chatUrl: data.chatUrl
         };
         if (sidebarApp.selectedPlace.vkLink.length < 5) {
             sidebarApp.selectedPlace.vkLink = '#'

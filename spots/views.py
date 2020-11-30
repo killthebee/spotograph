@@ -34,7 +34,7 @@ def show_page(request):
             "properties": {
                 "title": title,
                 "placeId": place_id,
-                "detailsUrl": reverse('details', kwargs={'pk': place_id})
+                "detailsUrl": reverse('details', kwargs={'pk': place_id}),
             },
         }
         features.append(feature)
@@ -70,6 +70,7 @@ def fetch_spot_details(request, pk):
         'vk_link': spot.vk,
         'inst_link': spot.inst,
         'messages': messages,
+        "chatUrl": reverse('chat:spot_chat', kwargs={'spot_id': spot.id})
     }
     return JsonResponse(details, safe=False, json_dumps_params={'ensure_ascii': False})
 
@@ -90,7 +91,8 @@ def show_cms(request, pk):
                     'inst': spot.inst,
                     'vk': spot.vk,
                     'main_image': spot.main_image.main_image,
-                    'features_images': spot.images.all()
+                    'features_images': spot.images.all(),
+                    'pk': pk
                 }
     except AttributeError:
         return redirect('login')
@@ -118,3 +120,9 @@ class RegisterUserView(CreateView):
 
 class RegisterDoneView(TemplateView):
     template_name = 'signup_done.html'
+
+
+def delete_spot(request, pk):
+    spot = Spot.objects.get(pk=pk)
+    spot.delete()
+    return redirect('index')
