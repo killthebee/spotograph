@@ -31,6 +31,7 @@ class SpotDetail(APIView):
 
             new_main_image = MainImage.objects.create(spot=spot)
             new_main_image.main_image.save('lel222.jpg', main_image, save=True)
+            response = {'success': True, 'pk': spot.pk}
 
         elif int(request.data['pk']) > 0:
 
@@ -48,9 +49,10 @@ class SpotDetail(APIView):
             spot = Spot.objects.get(pk=pk)
             spot.main_image.main_image.save('lel222.jpg', main_image, save=True)
             spot.images.all().delete()
+            response = {'success': True}
 
         for index, image in enumerate(secondary_imgs):
             feature_image = FeatureImage.objects.create(place=spot)
             feature_image.image.save(f"{index}_{serializer.validated_data['title']}.jpg", image, save=True)
 
-        return Response({})
+        return Response(response)

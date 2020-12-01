@@ -288,7 +288,7 @@
             </a>
           </template>
         </div>
-        <div v-html="selectedPlace.long_description"></div>
+        <div v-html="featuresDescription"></div>
         {% endverbatim %}
 
         <h5>Последние сообщения:</h5>
@@ -533,6 +533,14 @@
         carouselImgs: function () {
             return this.selectedPlace.imgs;
         },
+        featuresDescription: function () {
+            if (this.selectedPlace.long_description.includes('\n')) {
+                let description = this.selectedPlace.long_description.replace('\n', '<br>');
+                return description
+            } else {
+                return this.selectedPlace.long_description
+            }
+        }
     },
     updated: function () {
         this.$nextTick(function () {
@@ -581,7 +589,7 @@
       sidebarApp.selectedPlace.short_description = shortDescription.value
   });
   spotFeatures.addEventListener('keyup', function (e) {
-      sidebarApp.selectedPlace.long_description = spotFeatures.value
+      sidebarApp.selectedPlace.long_description = spotFeatures.value;
   });
   instField.addEventListener('keyup', function (e) {
       sidebarApp.selectedPlace.instLink = instField.value
@@ -737,14 +745,14 @@
           }
       }
   } catch (e) {
-      alert(`bububu ${e}`)
+      console.error(`${e}`);
   }
 
   function loadJSON(elementId){
       let element = document.getElementById(elementId);
 
       if (!element){
-        log.error(`Not found element with id '${elementId}'.`)
+        log.error(`Not found element with id '${elementId}'.`);
         return null;
       }
 
@@ -791,8 +799,10 @@
               return;
           }
 
-          let result = await response.text();
-          console.log(result);
+          let result = await response.json();
+          if (result.pk){
+              window.location.href = '{% url 'cms' 1234 %}'.replace(1234, result.pk);
+          };
       } catch (e) {
           alert('Ошибка при обновлении/создании данных спота');
           throw e;
