@@ -12,5 +12,4 @@ urlpatterns = [
     path('accounts/logout/', views.SpotLogoutView.as_view(), name='logout'),
     path('accounts/signup/', views.RegisterUserView.as_view(), name='signup'),
     path('accounts/signupdone/', views.RegisterDoneView.as_view(), name='signup_done'),
-    path('chat/', include('chat.urls')),
 ]
