@@ -535,8 +535,9 @@
         },
         featuresDescription: function () {
             if (this.selectedPlace.long_description.includes('\n')) {
-                let description = this.selectedPlace.long_description.replace('\n', '<br>');
-                return description
+                console.log(this.selectedPlace.long_description)
+                this.selectedPlace.long_description = this.selectedPlace.long_description.replaceAll('\n', '<br>');
+                return this.selectedPlace.long_description
             } else {
                 return this.selectedPlace.long_description
             }
@@ -616,20 +617,24 @@
   let mainImageInput = document.getElementById('main-input'),
       mainImageImage = document.getElementById('main-image'),
       mainImageImageBackUp = '{% static 'spotograph/mountain-bike.png' %}',
-      reader = new FileReader();
+      reader = new FileReader(),
+      readerResult = reader.result
 
   reader.onload = e => {
       mainImageImage.src = e.target.result;
       sidebarApp.selectedPlace.mainPhotoSrc = e.target.result;
   };
-  mainImageInput.addEventListener('change', function (e) {
+  mainImageInput.onclick = function () {
+      this.value = null;
+  };
+  mainImageInput.addEventListener('input', function (e) {
       let file = e.target.files[0];
       reader.readAsDataURL(file);
   });
   let mainDeleteButton = document.getElementById('main-delete');
       mainDeleteButton.addEventListener('click', function (e) {
       mainImageImage.src = mainImageImageBackUp;
-      sidebarApp.selectedPlace.mainPhotoSrc = null;
+      sidebarApp.selectedPlace.mainPhotoSrc = mainImageImageBackUp;
   });
 
   function refreshCarousel(idsAndPics) {
@@ -639,6 +644,8 @@
           imgs.push(idsAndPics[id]);
           }
       }
+      {#это несущий принт, его не надо удолять#}
+      console.log(`refreshing ${imgs.length}`)
       sidebarApp.selectedPlace.imgs = imgs;
   }
 
@@ -651,7 +658,6 @@
   }
 
   function checkEmptyInputs(idsAndPics) {
-      console.log(idsAndPics)
       let emptyInputs = [];
       if (idsAndPics.length > 3) {
           for (idAndPic in idsAndPics) {
@@ -659,6 +665,7 @@
                   emptyInputs.push(idAndPic);
               }
               if (emptyInputs.length > 1) {
+                  console.log('at deleting')
                   let emptyInput = document.getElementById(emptyInputs[0]);
                   emptyInput.parentNode.removeChild(emptyInput);
                   delete idsAndPics[emptyInputs[0]];
@@ -695,6 +702,10 @@
           refreshCarousel(idsAndPics);
 
           checkIfImgFieldIsFull(idsAndPics, imgField, imgInputTemplate);
+      };
+
+      currentInput.onclick = function () {
+          this.value = null;
       };
 
       currentInput.addEventListener('change', function (e) {
