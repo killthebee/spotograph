@@ -2,7 +2,7 @@
 
 Полезный(!) сайт МТБ спотов.
 
-<iframe src="https://player.vimeo.com/video/556225096" width="640" height="564" frameborder="0" allow="autoplay; fullscreen" allowfullscreen></iframe>
+https://player.vimeo.com/video/556225096
 
 сильно вдохновлён [этим](https://github.com/killthebee/afisha)
 
