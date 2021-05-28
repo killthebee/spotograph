@@ -2,7 +2,7 @@
 
 Полезный(!) сайт МТБ спотов.
 
-https://player.vimeo.com/video/556225096
+[![Watch the video](https://vumbnail.com/556225096.jpg)](https://player.vimeo.com/video/556225096)
 
 сильно вдохновлён [этим](https://github.com/killthebee/afisha)
 
